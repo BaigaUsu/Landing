@@ -1,5 +1,5 @@
 import { rootApi } from "@/RTKQuery/api/rootApi";
-import { Task, TaskRequest } from "@/types/taskType";
+import { Task, TaskRequest, TaskShort } from "@/types/taskType";
 
 export const tasksApi = rootApi.injectEndpoints({
   endpoints: (build) => ({
@@ -9,17 +9,31 @@ export const tasksApi = rootApi.injectEndpoints({
             method: "GET"
         }),
     }),
+    getActualTasks: build.query<Task[], void>({
+        query: () => ({
+            url: "http://95.179.247.253/api/v1/tasks/actual/",
+            method: "GET"
+        }),
+        providesTags: ['Tasks'],
+    }),
     getTaskById: build.query<Task, number>({
         query: (id) => ({
             url: `http://95.179.247.253/api/v1/tasks/${id}`,
             method: "GET"
         }),
     }),
-    createTask: build.mutation<Task, {body: TaskRequest}>({
+    createTask: build.mutation<Task, TaskRequest>({
         query: (body) => ({
             url: "http://95.179.247.253/api/v1/tasks/",
             method: "POST",
             body,
+        }),
+        invalidatesTags: ['Tasks'],
+    }),
+    getTaskLabels: build.query<{ id: number; label: string }[],void>({
+        query: () => ({
+            url: `http://95.179.247.253/api/v1/tasks/labels/`,
+            method: "GET",
         }),
     }),
     updateTask: build.mutation<Task, { id: number; data: TaskRequest }>({
@@ -28,6 +42,7 @@ export const tasksApi = rootApi.injectEndpoints({
             method: "PUT",
             body: data,
         }),
+        invalidatesTags: ['Tasks'],
     }),
     patchTask: build.mutation<Task, { id: number; data: Partial<TaskRequest> }>({
         query: ({ id, data }) => ({
@@ -41,16 +56,19 @@ export const tasksApi = rootApi.injectEndpoints({
             url: `http://95.179.247.253/api/v1/tasks/${id}/`,
             method: "DELETE",
         }),
+        invalidatesTags: ['Tasks'],
     }),
   }),
-//   overrideExisting: false,
+  overrideExisting: true,
 });
 
 export const {
-  useGetTasksQuery,
-  useGetTaskByIdQuery,
-  useCreateTaskMutation,
-  useUpdateTaskMutation,
-  usePatchTaskMutation,
-  useDeleteTaskMutation
+    useGetTasksQuery,
+    useGetActualTasksQuery,
+    useGetTaskByIdQuery,
+    useCreateTaskMutation,
+    useGetTaskLabelsQuery,
+    useUpdateTaskMutation,
+    usePatchTaskMutation,
+    useDeleteTaskMutation
 } = tasksApi;

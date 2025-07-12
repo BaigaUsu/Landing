@@ -31,6 +31,10 @@ export interface TaskRequest {
   surname: string;
   email: string;
   phone_number: string;
-  action: string;
-  status: string;
+  action?: string | null;
+  action_date?: string | null; // формат: YYYY-MM-DD
+  action_time?: string | null; // формат: HH:MM:SS
+  previous_task?: number | null;
+  application?: number | null;
+  project?: number | null;
 }
