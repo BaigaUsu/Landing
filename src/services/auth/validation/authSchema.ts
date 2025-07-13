@@ -15,7 +15,6 @@ export const taskSchema = z.object({
     action: z.string().nullable().optional(),
     action_date: z.string().nullable().optional(),
     action_time: z.string().nullable().optional(),
-    // status: z.string().min(1, "Статус обязателен"),
     previous_task: z.number().nullable().optional(),
     application: z.number().nullable().optional(),
     project: z.number().nullable().optional(),
@@ -31,4 +30,26 @@ export const taskSchema = z.object({
     action_time: z.string().nullable().optional(),
     status: z.string().min(1, "Статус обязателен"),
     project: z.number().nullable().optional(),
+  });
+
+export const projectSchema = z.object({
+    project_name: z.string().min(1, "Название проекта обязательно"),
+    client: z.union([z.number(), z.null()]),
+    description: z.string().optional(),
+    start_date: z.string().nullable().optional(),
+    end_date: z.string().nullable().optional(),
+    cost: z.union([z.number(), z.null()]).optional(),
+    status: z.string().nullable().optional(),
+    application: z.union([z.number(), z.null()]).optional(),
+  });
+
+  export const projectUpdateSchema = z.object({
+    project_name: z.string().min(1, "Название обязательно"),
+    client: z.number().nullable(),
+    description: z.string().optional(),
+    start_date: z.string().optional(),
+    end_date: z.string().optional(),
+    cost: z.number().nonnegative().optional(),
+    status: z.string().optional(),
+    comment: z.string().optional(),
   });

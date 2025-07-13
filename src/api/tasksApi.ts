@@ -1,5 +1,5 @@
 import { rootApi } from "@/RTKQuery/api/rootApi";
-import { Task, TaskRequest, TaskShort } from "@/types/taskType";
+import { Task, TaskRequest } from "@/types/taskType";
 
 export const tasksApi = rootApi.injectEndpoints({
   endpoints: (build) => ({

@@ -1,4 +1,3 @@
-// components/TaskDetail.tsx
 'use client';
 
 import { useDeleteTaskMutation, useGetTaskByIdQuery } from "@/api/tasksApi";

@@ -1,6 +1,7 @@
 import { ApplicationShort } from "./appTypes";
 import { Stage } from "./stagesTypes";
 import { TaskShort } from "./taskType";
+import { Client } from "./usersTypes";
 
 export interface ProjectShort {
   id: number;
@@ -14,7 +15,7 @@ export interface ProjectShort {
 export interface Project {
   id: number;
   project_name: string;
-  client: number; // ID клиента
+  client: Client;
   description: string;
   start_date: string;
   end_date: string;
@@ -30,11 +31,11 @@ export interface Project {
 
 export interface ProjectRequest {
   project_name: string;
-  client: number;
-  description: string;
-  start_date: string;
-  end_date: string;
-  cost: string;
-  status: string;
-  application: number | null;
-}
+  client: number | null;
+  description?: string;
+  start_date?: string | null;
+  end_date?: string | null;
+  cost?: number | null;
+  status?: string | null;
+  application?: number | null;
+};
