@@ -1,11 +1,11 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { User } from "@/types/appTypes";
 import { getAccessToken } from "@/services/auth/token/tokenStorage";
+import { Client } from "@/types/usersTypes";
 
 interface AuthState {
   isAuthenticated: boolean;
   accessToken: string | null;
-  user: User | null;
+  user: Client | null;
 }
 
 const initialState: AuthState = {
@@ -23,7 +23,7 @@ const authSlice = createSlice({
       state.accessToken = null;
       state.user = null;
     },
-    setUser: (state, action: PayloadAction<User>) => {
+    setUser: (state, action: PayloadAction<Client>) => {
       state.user = action.payload;
       state.isAuthenticated = true;
     },
