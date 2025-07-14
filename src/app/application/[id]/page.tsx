@@ -1,0 +1,87 @@
+// components/Applications/ApplicationDetailCard.tsx
+'use client';
+
+import { useGetApplicationByIdQuery, usePatchApplicationMutation } from "@/api/appApi";
+import { useEffect } from "react";
+
+type Props = {
+  selectedId: number | null;
+};
+
+export default function ApplicationDetailCard({ selectedId }: Props) {
+  const { data, isLoading, error, refetch } = useGetApplicationByIdQuery(selectedId!, {
+    skip: !selectedId,
+  });
+
+  const [patchApplication] = usePatchApplicationMutation();
+
+  useEffect(() => {
+    if (selectedId) refetch();
+  }, [selectedId, refetch]);
+
+  const handleStatusChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
+    if (!selectedId) return;
+    try {
+      await patchApplication({
+        id: selectedId,
+        data: { status: e.target.value },
+      }).unwrap();
+      refetch();
+    } catch (err) {
+      alert("Ошибка при обновлении статуса");
+      console.error(err);
+    }
+  };
+
+  if (!selectedId) return <p className="text-gray-500 italic">Выберите заявку</p>;
+  if (isLoading) return <p>Загрузка данных...</p>;
+  if (error || !data) return <p>Ошибка загрузки заявки</p>;
+
+  return (
+    <div>
+      <h1 className="text-2xl font-bold mb-4">Заявка #{data.id}</h1>
+      <p><strong>Имя:</strong> {data.name}</p>
+      <p><strong>Фамилия:</strong> {data.surname}</p>
+      <p><strong>Email:</strong> {data.email}</p>
+      <p><strong>Телефон:</strong> {data.phone_number}</p>
+
+      <div className="mt-4">
+        <label className="block mb-1 font-semibold">Статус заявки:</label>
+        <select
+          value={data.status}
+          onChange={handleStatusChange}
+          className="border px-3 py-2 rounded"
+        >
+          <option value="pending">pending</option>
+          <option value="verified-positive">verified-positive</option>
+          <option value="verified-negative">verified-negative</option>
+          <option value="verified-waiting">verified-waiting</option>
+        </select>
+      </div>
+
+      <p className="mt-4"><strong>Создан:</strong> {new Date(data.created_at).toLocaleString()}</p>
+      <p><strong>Обновлён:</strong> {new Date(data.updated_at).toLocaleString()}</p>
+
+      {data.tasks.length > 0 ? (
+        <>
+          <h2 className="font-semibold mt-6">Задачи:</h2>
+          <ul className="space-y-2 list-disc ml-6">
+            {data.tasks.map((task) => (
+              <li key={task.id} className="p-2 border rounded">
+                <p><strong>Задача №</strong>{task.id}</p>
+                <p><strong>Действие:</strong> {task.action}</p>
+                <p><strong>Статус:</strong> {task.status}</p>
+                <p><strong>Дата:</strong> {task.action_date}</p>
+                <p><strong>Время:</strong> {task.action_time}</p>
+              </li>
+            ))}
+          </ul>
+        </>
+      ) : (
+        <p className="mt-4">Нет задач</p>
+      )}
+
+      <p className="mt-4"><strong>Проект:</strong> {data.project?.project_name ?? "Нет проекта"}</p>
+    </div>
+  );
+}
