@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useGetActualTasksQuery } from "@/api/tasksApi";
 import { TaskCreateForm } from "@/components/Forms/TaskCreationForm";
-import { TaskDetail } from "./[id]/page";
+import { TaskDetailPage } from "@/components/ItemPages/TaskDetailPage";
 
 export default function TasksMasterDetailPage() {
   const { data: tasks, isLoading, error } = useGetActualTasksQuery();
@@ -82,7 +82,7 @@ export default function TasksMasterDetailPage() {
 
         {/* Подробности задачи */}
         {typeof selectedId === 'number' && !showCreateForm && (
-          <TaskDetail 
+          <TaskDetailPage
             taskId={selectedId}
             onDelete={() => {
               setSelectedId(null); // закрываем детальную панель

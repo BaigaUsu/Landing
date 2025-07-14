@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useGetActualProjectsQuery, useGetProjectsQuery } from "@/api/projectApi";
 import { ProjectCreateForm } from "@/components/Forms/ProjectCreationForm";
-import { ProjectDetailPage } from "./[id]/page";
+import { ProjectDetailPage } from "@/components/ItemPages/ProjectDetailPage";
 
 export default function ProjectsMasterDetailPage() {
   const { data: projects, isLoading, error } = useGetActualProjectsQuery();
@@ -80,7 +80,7 @@ export default function ProjectsMasterDetailPage() {
 
         {/* Подробности проекта */}
         {typeof selectedId === 'number' && !showCreateForm && (
-          <ProjectDetailPage 
+          <ProjectDetailPage
             id={selectedId} 
             onDelete={() => {
               setSelectedId(null); // закрываем детальную панель

@@ -3,7 +3,7 @@
 
 import { useState } from "react";
 import { useGetApplicationsQuery } from "@/api/appApi";
-import ApplicationDetailCard from "./[id]/page";
+import ApplicationDetailCard from "@/components/ItemPages/ApplicationDetailPage";
 
 export default function ApplicationMasterDetailPage() {
   const { data: applications, isLoading, error } = useGetApplicationsQuery();
