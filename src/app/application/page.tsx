@@ -2,11 +2,11 @@
 'use client';
 
 import { useState } from "react";
-import { useGetApplicationsQuery } from "@/api/appApi";
+import { useGetActualApplicationsQuery, useGetApplicationsQuery } from "@/api/appApi";
 import ApplicationDetailCard from "@/components/ItemPages/ApplicationDetailPage";
 
 export default function ApplicationMasterDetailPage() {
-  const { data: applications, isLoading, error } = useGetApplicationsQuery();
+  const { data: applications, isLoading, error } = useGetActualApplicationsQuery();
   const [selectedId, setSelectedId] = useState<number | null>(null);
 
   if (isLoading) return <p className="p-4">Загрузка заявок...</p>;

@@ -8,14 +8,14 @@ export const clientsApi = rootApi.injectEndpoints({
   endpoints: (build) => ({
     getClients: build.query<Client[], void>({
       query: () => ({
-        url: "http://95.179.247.253/api/v1/accounts/clients/",
+        url: "/accounts/clients/",
         method: "GET",
       }),
     //   providesTags: ["Clients"],
     }),
 
     getClientById: build.query<Client, number>({
-      query: (id) => `clients/${id}/`,
+      query: (id) => `accounts/clients/${id}/`,
     //   providesTags: (result, error, id) => [{ type: "Clients", id }],
     }),
   }),

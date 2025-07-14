@@ -66,7 +66,6 @@ export const TaskCreateForm = ({ onSuccess }: Props) => {
         { label: "Фамилия", name: "surname" },
         { label: "Email", name: "email", type: "email" },
         { label: "Телефон", name: "phone_number", type: "tel" },
-        { label: "Действие", name: "action" },
         { label: "Дата действия", name: "action_date", type: "date" },
         { label: "Время действия", name: "action_time", type: "time" },
       ].map((field, idx) => (
@@ -84,6 +83,22 @@ export const TaskCreateForm = ({ onSuccess }: Props) => {
           )}
         </div>
       ))}
+
+      <div className="flex flex-col">
+          <label className="text-sm font-medium mb-1">Действие</label>
+          <select
+          {...register("action")}
+          defaultValue="Действие"
+          className="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+          >
+          <option value="" hidden>Не выбрано</option>
+          <option value="meet">meet</option>
+          <option value="call">call</option>
+          </select>
+          {errors.action && (
+          <p className="text-red-600 text-sm mt-1">{errors.action.message}</p>
+          )}
+      </div>
 
       {/* Предыдущая задача */}
       <div className="flex flex-col">

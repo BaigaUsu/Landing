@@ -1,33 +1,29 @@
-import { fetchLib } from "@/lib/http/fetchLib";
-import type { BaseQueryFn, FetchArgs } from "@reduxjs/toolkit/query";
+// lib/customBaseQuery.ts
+import type { BaseQueryFn, FetchArgs, FetchBaseQueryError } from "@reduxjs/toolkit/query";
+import { fetchLib } from "@/lib/http/fetchLib"; // твой кастомный fetch
 
-export const customBaseQuery: BaseQueryFn<string | FetchArgs, unknown, unknown> = async (args, api) => {
-
+export const customBaseQuery: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryError> = async (args, api) => {
 	try {
 		const dispatch = api.dispatch;
-		
+
+		let url = '';
+		let options = {};
+
 		if (typeof args === "string") {
-			// Просто URL, без доп. опций
-			const data = await fetchLib(args, {}, dispatch);
-			return { data };
+			url = `/api${args.startsWith('/') ? args : '/' + args}`;
+		} else {
+			url = `/api${args.url.startsWith('/') ? args.url : '/' + args.url}`;
+			options = { ...args };
 		}
-	
-		const { url, headers, ...rest } = args;
-		
-		const data = await fetchLib(
-			url,
-			{
-				...rest,
-			},
-			dispatch
-		);
-		
+
+		const data = await fetchLib(url, options, dispatch);
 		return { data };
-	} catch (error) {
+	} catch (error: any) {
 		return {
 			error: {
 				status: "CUSTOM_ERROR",
-				message: (error as Error).message,
+				data: undefined,
+				error: error.message || "Unknown error",
 			},
 		};
 	}
