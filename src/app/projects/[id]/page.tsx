@@ -1,7 +1,11 @@
 import ApplicationMasterDetailPage from "@/app/application/page";
 import { ProjectDetailPage } from "@/components/ItemPages/ProjectDetailPage";
 
-export default function Page({ params }: { params: { id: string } }) {
+type PageProps = {
+  params: { id: string };
+};
+
+export default function Page({ params }: PageProps) {
   return (
     <div className="p-8">
       <ProjectDetailPage id={+params.id} />
