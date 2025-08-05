@@ -1,8 +1,8 @@
 import { AppDispatch } from "@/redux/store";
-import { attachAuthHeader } from "@/services/auth/token/attachAuthHeader";
-import { ExtendedFetchOptions } from "@/types/fetchTypes";
+import { attachAuthHeader } from "@/share/services/auth/token/attachAuthHeader";
+import { ExtendedFetchOptions } from "@/share/types/fetchTypes";
 import { prepareRequestBodyAndHeaders } from "./prepareRequestBodyAndHeaders";
-import { handleAuthError } from "@/services/auth/handleAuthError";
+import { handleAuthError } from "@/share/services/auth/handleAuthError";
 import { handleResponse } from "./handleResponse";
 import { retryDelayWithBackoff } from "./retryDelayWithBackoff";
 

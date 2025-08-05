@@ -6,7 +6,7 @@ import { z } from "zod";
 import { useCreateTaskMutation, useGetTaskLabelsQuery } from "@/api/tasksApi";
 import { useGetApplicationLabelsQuery } from "@/api/appApi";
 import { useGetProjectLabelsQuery } from "@/api/projectApi";
-import { taskSchema } from "@/services/auth/validation/authSchema";
+import { taskSchema } from "@/share/services/auth/validation/authSchema";
 import { useState } from "react";
 
 type FormValues = z.infer<typeof taskSchema>;

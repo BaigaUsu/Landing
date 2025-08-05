@@ -5,8 +5,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { z } from "zod";
 import { useUpdateProjectMutation } from "@/api/projectApi";
-import { projectUpdateSchema } from "@/services/auth/validation/authSchema";
-import { Project } from "@/types/projectTypes";
+import { projectUpdateSchema } from "@/share/services/auth/validation/authSchema";
+import { Project } from "@/features/project/types/projectTypes";
 import { useGetClientsQuery } from "@/api/usersApi";
 
 type ProjectFormData = z.infer<typeof projectUpdateSchema>;
@@ -77,7 +77,6 @@ export function ProjectEditForm({ project, onSuccess }: Props) {
                     })}
                     className="border border-gray-300 rounded px-3 py-2"
                 >
-                    <option value="">Не выбрано</option>
                     {clients?.map(client => (
                     <option key={client.id} value={client.id}>
                         {client.email}

@@ -1,4 +1,4 @@
-import ApplicationDetailPage from "@/components/ItemPages/ApplicationDetailPage";
+import ApplicationDetailPage from "@/features/application/components/ApplicationDetailPage";
 
 export default function Page({ params }: any) {
   return (

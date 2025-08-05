@@ -1,7 +1,5 @@
 import { rootApi } from "@/RTKQuery/api/rootApi";
-import { Project, ProjectRequest } from "@/types/projectTypes";
-
-// Централизованный API URL
+import { Project, ProjectRequest } from "@/features/project/types/projectTypes";
 
 export const projectsApi = rootApi.injectEndpoints({
   overrideExisting: true,
@@ -25,7 +23,9 @@ export const projectsApi = rootApi.injectEndpoints({
     getProjectById: build.query<Project, number>({
       query: (id) => ({
         url: `/projects/${id}/`,
+        method: "GET",
       }),
+      providesTags: (result, error, id) => [{ type: 'Stages', id }, {type: 'Projects'}],
     }),
 
     createProject: build.mutation<Project, ProjectRequest>({

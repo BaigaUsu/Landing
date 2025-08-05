@@ -1,5 +1,5 @@
 import { ApplicationShort } from "./appTypes";
-import { ProjectShort } from "./projectTypes";
+import { ProjectShort } from "../features/project/types/projectTypes";
 
 
 export interface Task {

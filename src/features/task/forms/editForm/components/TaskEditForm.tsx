@@ -5,7 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { z } from "zod";
 import { useUpdateTaskMutation } from "@/api/tasksApi";
-import { taskUpdateSchema } from "@/services/auth/validation/authSchema";
+import { taskUpdateSchema } from "@/share/services/auth/validation/authSchema";
 import { Task } from "@/types/taskType";
 import { useGetProjectLabelsQuery } from "@/api/projectApi";
 

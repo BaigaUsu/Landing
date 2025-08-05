@@ -1,7 +1,7 @@
-import { ApplicationShort } from "./appTypes";
-import { Stage } from "./stagesTypes";
-import { TaskShort } from "./taskType";
-import { Client } from "./usersTypes";
+import { ApplicationShort } from "../../application/types/appTypes";
+import { Stage } from "../../stages/types/stagesTypes";
+import { Client } from "../../../share/types/usersTypes";
+import { TaskShort } from "@/features/task/types/taskType";
 
 export interface ProjectShort {
   id: number;

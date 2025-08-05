@@ -1,7 +1,7 @@
 // src/api/clientsApi.ts
 
 import { rootApi } from "@/RTKQuery/api/rootApi";
-import { Client } from "@/types/usersTypes";
+import { Client } from "@/share/types/usersTypes";
 
 
 export const clientsApi = rootApi.injectEndpoints({
@@ -11,7 +11,7 @@ export const clientsApi = rootApi.injectEndpoints({
         url: "/accounts/clients/",
         method: "GET",
       }),
-    //   providesTags: ["Clients"],
+      providesTags: ["Clients"],
     }),
 
     getClientById: build.query<Client, number>({

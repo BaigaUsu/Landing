@@ -1,4 +1,4 @@
-import { TaskDetailPage } from "@/components/ItemPages/TaskDetailPage";
+import { TaskDetailPage } from "@/features/task/components/TaskDetailPage";
 
 
 

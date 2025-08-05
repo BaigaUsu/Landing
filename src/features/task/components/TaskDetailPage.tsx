@@ -1,7 +1,7 @@
 'use client';
 
 import { useDeleteTaskMutation, useGetTaskByIdQuery } from "@/api/tasksApi";
-import { TaskEditForm } from "@/components/Forms/TaskEditForm";
+import { TaskEditForm } from "@/features/task/forms/editForm/components/TaskEditForm";
 import { useState } from "react";
 
 type Props = {

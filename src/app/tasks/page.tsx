@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import { useGetActualTasksQuery } from "@/api/tasksApi";
-import { TaskCreateForm } from "@/components/Forms/TaskCreationForm";
-import { TaskDetailPage } from "@/components/ItemPages/TaskDetailPage";
+import { TaskCreateForm } from "@/features/task/forms/createForm/components/TaskCreationForm";
+import { TaskDetailPage } from "@/features/task/components/TaskDetailPage";
 
 export default function TasksMasterDetailPage() {
   const { data: tasks, isLoading, error } = useGetActualTasksQuery();

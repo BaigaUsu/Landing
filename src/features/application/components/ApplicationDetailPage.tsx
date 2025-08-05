@@ -1,4 +1,3 @@
-// components/Applications/ApplicationDetailCard.tsx
 'use client';
 
 import { useGetApplicationByIdQuery, usePatchApplicationMutation } from "@/api/appApi";

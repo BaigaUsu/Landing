@@ -1,5 +1,5 @@
 import { rootApi } from "@/RTKQuery/api/rootApi";
-import { Application, ApplicationRequest } from "@/types/appTypes";
+import { Application, ApplicationRequest } from "@/features/application/types/appTypes";
 
 
 export const appApi = rootApi.injectEndpoints({

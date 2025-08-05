@@ -1,4 +1,4 @@
-import { ProjectShort } from "./projectTypes";
+import { ProjectShort } from "../../project/types/projectTypes";
 import { TaskShort } from "./taskType";
 
 export interface Application {

@@ -5,7 +5,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useCreateProjectMutation } from "@/api/projectApi";
 import { useState } from "react";
-import { projectSchema } from "@/services/auth/validation/authSchema";
+import { projectSchema } from "@/share/services/auth/validation/authSchema";
 import { useGetClientsQuery } from "@/api/usersApi";
 import { useGetApplicationLabelsQuery } from "@/api/appApi";
 

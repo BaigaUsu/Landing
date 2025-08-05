@@ -1,5 +1,5 @@
+import { Task, TaskRequest } from "@/features/task/types/taskType";
 import { rootApi } from "@/RTKQuery/api/rootApi";
-import { Task, TaskRequest } from "@/types/taskType";
 
 export const tasksApi = rootApi.injectEndpoints({
   endpoints: (build) => ({
@@ -35,6 +35,7 @@ export const tasksApi = rootApi.injectEndpoints({
             url: `/tasks/labels/`,
             method: "GET",
         }),
+        providesTags: ['Tasks'],
     }),
     updateTask: build.mutation<Task, { id: number; data: TaskRequest }>({
         query: ({ id, data }) => ({

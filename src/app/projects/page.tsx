@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import { useGetActualProjectsQuery, useGetProjectsQuery } from "@/api/projectApi";
-import { ProjectCreateForm } from "@/components/Forms/ProjectCreationForm";
-import { ProjectDetailPage } from "@/components/ItemPages/ProjectDetailPage";
+import { ProjectCreateForm } from "@/features/project/forms/create/components/ProjectCreationForm";
+import { ProjectDetailPage } from "@/features/project/components/ProjectDetailPage";
 
 export default function ProjectsMasterDetailPage() {
   const { data: projects, isLoading, error } = useGetActualProjectsQuery();

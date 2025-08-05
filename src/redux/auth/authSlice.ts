@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { getAccessToken } from "@/services/auth/token/tokenStorage";
-import { Client } from "@/types/usersTypes";
+import { getAccessToken } from "@/share/services/auth/token/tokenStorage";
+import { Client } from "@/share/types/usersTypes";
 
 interface AuthState {
   isAuthenticated: boolean;
