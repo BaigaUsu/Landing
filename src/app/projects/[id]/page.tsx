@@ -1,4 +1,4 @@
-import { ProjectDetailPage } from "@/features/project/components/ProjectDetailPage";
+import { ProjectDetailPage } from "@/features/projects/components/ProjectDetailPage";
 
 export default function Page({ params }: any) {
   return (

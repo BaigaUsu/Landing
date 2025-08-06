@@ -1,6 +1,6 @@
 import { AppDispatch } from "@/redux/store";
 import { attachAuthHeader } from "@/share/services/auth/token/attachAuthHeader";
-import { ExtendedFetchOptions } from "@/share/types/fetchTypes";
+import { ExtendedFetchOptions } from "@/lib/http/types/fetchTypes";
 import { prepareRequestBodyAndHeaders } from "./prepareRequestBodyAndHeaders";
 import { handleAuthError } from "@/share/services/auth/handleAuthError";
 import { handleResponse } from "./handleResponse";

@@ -1,9 +1,9 @@
 'use client';
 
 import { useState } from "react";
-import { useGetActualTasksQuery } from "@/api/tasksApi";
-import { TaskCreateForm } from "@/features/task/forms/createForm/components/TaskCreationForm";
-import { TaskDetailPage } from "@/features/task/components/TaskDetailPage";
+import { useGetActualTasksQuery } from "@/features/tasks/api/tasksApi";
+import { TaskCreateForm } from "@/features/tasks/forms/createForm/components/TaskCreationForm";
+import { TaskDetailPage } from "@/features/tasks/components/TaskDetailPage";
 
 export default function TasksMasterDetailPage() {
   const { data: tasks, isLoading, error } = useGetActualTasksQuery();
