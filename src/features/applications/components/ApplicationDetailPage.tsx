@@ -4,25 +4,25 @@ import { useGetApplicationByIdQuery, usePatchApplicationMutation } from "@/featu
 import { useEffect } from "react";
 
 type Props = {
-  selectedId: number | null;
+  id: number | null;
 };
 
-export default function ApplicationDetailPage({ selectedId }: Props) {
-  const { data, isLoading, error, refetch } = useGetApplicationByIdQuery(selectedId!, {
-    skip: !selectedId,
+export default function ApplicationDetailPage({ id }: Props) {
+  const { data, isLoading, error, refetch } = useGetApplicationByIdQuery(id!, {
+    skip: !id,
   });
 
   const [patchApplication] = usePatchApplicationMutation();
 
   useEffect(() => {
-    if (selectedId) refetch();
-  }, [selectedId, refetch]);
+    if (id) refetch();
+  }, [id, refetch]);
 
   const handleStatusChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
-    if (!selectedId) return;
+    if (!id) return;
     try {
       await patchApplication({
-        id: selectedId,
+        id: id,
         data: { status: e.target.value },
       }).unwrap();
       refetch();
@@ -32,7 +32,7 @@ export default function ApplicationDetailPage({ selectedId }: Props) {
     }
   };
 
-  if (!selectedId) return <p className="text-gray-500 italic">Выберите заявку</p>;
+  if (!id) return <p className="text-gray-500 italic">Выберите заявку</p>;
   if (isLoading) return <p>Загрузка данных...</p>;
   if (error || !data) return <p>Ошибка загрузки заявки</p>;
 
