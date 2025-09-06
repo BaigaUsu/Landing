@@ -1,14 +1,22 @@
 // components/Applications/ApplicationList.tsx
 'use client';
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useGetApplicationsQuery } from "@/features/applications/api/appApi";
 import ApplicationDetailPage from "@/features/applications/components/ApplicationDetailPage";
 
 export default function ApplicationMasterDetailPage() {
-  const { data: applications, isLoading, error } = useGetApplicationsQuery('actual');
+    const [statusFilter, setStatusFilter] = useState<
+        "all" | "actual" | "verified" | "verified-positive" | "verified-negative" | "verified-waiting"
+      >("actual");
+  const { data: applications, isLoading, error } = useGetApplicationsQuery(statusFilter);
   console.log(applications);
   const [selectedId, setSelectedId] = useState<number | null>(null);
+
+  useEffect(() => {
+      setSelectedId(null);
+    //   setShowCreateForm(false);
+    }, [statusFilter]);
 
   if (isLoading) return <p className="p-4">Загрузка заявок...</p>;
   if (error) return <p className="p-4 text-red-600">Ошибка загрузки заявок</p>;
@@ -18,6 +26,25 @@ export default function ApplicationMasterDetailPage() {
       {/* Список заявок */}
       <div className="w-1/3 border-r overflow-y-auto p-4">
         <h2 className="text-lg font-semibold mb-4">Заявки</h2>
+
+        {/* Селект фильтра — по умолчанию "actual" */}
+        <div className="mb-4">
+          <select
+            value={statusFilter}
+            onChange={(e) =>
+              setStatusFilter(e.target.value as typeof statusFilter)
+            }
+            className="border px-2 py-1 rounded w-full"
+          >
+            <option value="all">Все</option>
+            <option value="actual">Актуальные</option>
+            <option value="verified">Одобренные</option>
+            <option value="verified-positive">Успешные</option>
+            <option value="verified-negative">Неуспешные</option>
+            <option value="verified-waiting">В ожидании</option>
+          </select>
+        </div>
+
         {applications?.results?.length ? (
           applications.results.map((item) => (
             <div

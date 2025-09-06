@@ -1,28 +1,27 @@
 import { rootApi } from "@/RTKQuery/api/rootApi";
-import { Task, TaskRequest } from "@/share/types/tasks/taskType";
+import { Task, TaskCreateRequest, TaskId, TaskList, TaskUpdateRequest } from "@/features/tasks/types/taskType";
 
 export const tasksApi = rootApi.injectEndpoints({
   endpoints: (build) => ({
-    getTasks: build.query<Task[], void>({
-        query: () => ({
+    getTasks: build.query<Task<TaskList>, string | undefined>({
+        query: (status) => ({
             url: "/tasks/",
-            method: "GET"
-        }),
-    }),
-    getActualTasks: build.query<Task[], void>({
-        query: () => ({
-            url: "/tasks/actual/",
-            method: "GET"
+            method: "GET",
+            params: status ? { status: status } : undefined,
         }),
         providesTags: ['Tasks'],
     }),
-    getTaskById: build.query<Task, number>({
+    getTaskById: build.query<TaskId, number | null>({
         query: (id) => ({
-            url: `/tasks/${id}`,
+            url: `/tasks/${id}/`,
             method: "GET"
         }),
+        providesTags: (result, error, id) =>
+            id
+              ? [{ type: "Tasks", id }] // конкретный тег
+              : [{ type: "Tasks" }],
     }),
-    createTask: build.mutation<Task, TaskRequest>({
+    createTask: build.mutation<TaskId, TaskCreateRequest>({
         query: (body) => ({
             url: "/tasks/",
             method: "POST",
@@ -30,14 +29,7 @@ export const tasksApi = rootApi.injectEndpoints({
         }),
         invalidatesTags: ['Tasks'],
     }),
-    getTaskLabels: build.query<{ id: number; label: string }[],void>({
-        query: () => ({
-            url: `/tasks/labels/`,
-            method: "GET",
-        }),
-        providesTags: ['Tasks'],
-    }),
-    updateTask: build.mutation<Task, { id: number; data: TaskRequest }>({
+    updateTask: build.mutation<TaskId, { id: number; data: TaskUpdateRequest }>({
         query: ({ id, data }) => ({
             url: `/tasks/${id}/`,
             method: "PUT",
@@ -45,12 +37,13 @@ export const tasksApi = rootApi.injectEndpoints({
         }),
         invalidatesTags: ['Tasks'],
     }),
-    patchTask: build.mutation<Task, { id: number; data: Partial<TaskRequest> }>({
+    patchTask: build.mutation<TaskId, { id: number; data: Partial<TaskUpdateRequest> }>({
         query: ({ id, data }) => ({
             url: `/tasks/${id}/`,
             method: "PATCH",
             body: data,
         }),
+        invalidatesTags: ['Tasks']
     }),
     deleteTask: build.mutation<void, number>({
         query: (id) => ({
@@ -65,10 +58,8 @@ export const tasksApi = rootApi.injectEndpoints({
 
 export const {
     useGetTasksQuery,
-    useGetActualTasksQuery,
     useGetTaskByIdQuery,
     useCreateTaskMutation,
-    useGetTaskLabelsQuery,
     useUpdateTaskMutation,
     usePatchTaskMutation,
     useDeleteTaskMutation

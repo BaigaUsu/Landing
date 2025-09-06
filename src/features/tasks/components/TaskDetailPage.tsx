@@ -1,8 +1,9 @@
 'use client';
 
 import { useDeleteTaskMutation, useGetTaskByIdQuery } from "@/features/tasks/api/tasksApi";
-import { TaskEditForm } from "@/features/task/forms/editForm/components/TaskEditForm";
 import { useState } from "react";
+import { TaskEditForm } from "../forms/editForm/components/TaskEditForm";
+import { TaskCreateForm } from "../forms/createForm/components/TaskCreationForm";
 
 type Props = {
   taskId: number;
@@ -11,9 +12,12 @@ type Props = {
 };
 
 export function TaskDetailPage({ taskId, onCloseEdit, onDelete }: Props) {
-  const { data: task, isLoading } = useGetTaskByIdQuery(taskId);
+  const { data: task, isLoading } = useGetTaskByIdQuery(taskId, {
+    skip: taskId == null,
+  });
   const [deleteTask, { isLoading: isDeleting }] = useDeleteTaskMutation();
   const [showEdit, setShowEdit] = useState(false);
+  const [showCreateForm, setShowCreateForm] = useState(false);
 
   if (isLoading) return <p>Загрузка данных...</p>;
   if (!task) return <p>Задача не найдена</p>;
@@ -24,7 +28,7 @@ export function TaskDetailPage({ taskId, onCloseEdit, onDelete }: Props) {
       try {
         await deleteTask(safeTask.id).unwrap();
         alert("Задача удалена");
-        onDelete?.();
+        // onDelete?.();
       } catch (error) {
         alert("Ошибка при удалении задачи");
         console.error(error);
@@ -34,9 +38,16 @@ export function TaskDetailPage({ taskId, onCloseEdit, onDelete }: Props) {
 
   return (
     <div>
-      {!showEdit ? (
+      {!showEdit && !showCreateForm ? (
         <>
           <h1 className="text-2xl font-bold mb-4">Задача #{task.id}</h1>
+          {task.status === 'done-positive' && !task.next_task ? (<button
+            onClick={() => setShowCreateForm(true)}
+            className="bg-blue-600 text-white px-3 py-1 text-sm rounded"
+        >
+            Создать
+          </button>
+          ) : null}
 
           <button
             onClick={() => setShowEdit(true)}
@@ -100,10 +111,13 @@ export function TaskDetailPage({ taskId, onCloseEdit, onDelete }: Props) {
 
           <div className="mt-6">
             <p><strong>Проект:</strong> {task.project?.project_name ?? "Нет проекта"}</p>
+            <p><strong>Заявка:</strong> {task.application?.email ?? "Нет заявки"} </p>
             <p><strong>Заявка создана:</strong> {task.application ? new Date(task.application.created_at).toLocaleString() : "—"}</p>
           </div>
         </>
-      ) : (
+      ) : null}
+      
+      {showEdit && (
         <>
           <button
             onClick={() => setShowEdit(false)}
@@ -117,6 +131,29 @@ export function TaskDetailPage({ taskId, onCloseEdit, onDelete }: Props) {
             onSuccess={() => {
               setShowEdit(false);
               onCloseEdit?.();
+            }}
+          />
+        </>
+      )}
+
+      {showCreateForm && (
+        <>
+          <h1 className="text-2xl font-bold mb-4">Создание новой задачи</h1>
+          <button
+            onClick={() => setShowCreateForm(false)}
+            className="bg-gray-300 text-gray-800 px-3 py-1 mb-4 rounded"
+          >
+            ❌ Закрыть форму 
+          </button>
+
+          <TaskCreateForm
+            type="from-task"               // <-- тип создания
+            applicationId={task.application?.id} // <-- текущая заявка
+            applicationLabel={task.application?.email} // <-- заглушка
+            previousTaskId={task.id}          // <-- текущая задача
+            previousTaskLabel={task.action}
+            onSuccess={() => {
+              setShowCreateForm(false);
             }}
           />
         </>

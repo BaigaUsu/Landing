@@ -1,7 +1,8 @@
 'use client';
 
 import { useGetApplicationByIdQuery, usePatchApplicationMutation } from "@/features/applications/api/appApi";
-import { useEffect } from "react";
+import { TaskCreateForm } from "@/features/tasks/forms/createForm/components/TaskCreationForm";
+import { useEffect, useState } from "react";
 
 type Props = {
   id: number | null;
@@ -13,6 +14,7 @@ export default function ApplicationDetailPage({ id }: Props) {
   });
 
   const [patchApplication] = usePatchApplicationMutation();
+  const [showCreateForm, setShowCreateForm] = useState(false);
 
   useEffect(() => {
     if (id) refetch();
@@ -61,9 +63,38 @@ export default function ApplicationDetailPage({ id }: Props) {
       <p className="mt-4"><strong>Создан:</strong> {new Date(data.created_at).toLocaleString()}</p>
       <p><strong>Обновлён:</strong> {new Date(data.updated_at).toLocaleString()}</p>
 
-      {data.tasks.length > 0 ? (
-        <>
-          <h2 className="font-semibold mt-6">Задачи:</h2>
+      {/* Блок задач */}
+        <div className="flex justify-between items-center mb-2">
+          <h2 className="font-semibold">Задачи:</h2>
+          <button
+            onClick={() => setShowCreateForm(true)}
+            className="bg-blue-600 text-white px-3 py-1 text-sm rounded hover:bg-blue-700"
+          >
+            + Создать задачу
+          </button>
+        </div>
+
+        {showCreateForm && (
+          <div>
+            <TaskCreateForm
+              type="from-application"
+              applicationId={data.id}
+              applicationLabel={data.email}
+              onSuccess={() => {
+                setShowCreateForm(false);
+                refetch();
+              }}
+            />
+            <button
+              onClick={() => setShowCreateForm(false)}
+              className="mt-2 bg-gray-300 text-gray-800 px-3 py-1 rounded"
+            >
+              ❌ Закрыть форму
+            </button>
+          </div>
+        )}
+
+        {data.tasks.length > 0 ? (
           <ul className="space-y-2 list-disc ml-6">
             {data.tasks.map((task) => (
               <li key={task.id} className="p-2 border rounded">
@@ -75,11 +106,10 @@ export default function ApplicationDetailPage({ id }: Props) {
               </li>
             ))}
           </ul>
-        </>
-      ) : (
-        <p className="mt-4">Нет задач</p>
-      )}
-
+        ) : (
+          <p className="mt-2">Нет задач</p>
+        )}
+        
       <p className="mt-4"><strong>Проект:</strong> {data.project?.project_name ?? "Нет проекта"}</p>
     </div>
   );

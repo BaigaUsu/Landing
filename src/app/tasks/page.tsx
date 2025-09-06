@@ -1,27 +1,34 @@
 'use client';
 
-import { useState } from "react";
-import { useGetActualTasksQuery } from "@/features/tasks/api/tasksApi";
+import { useEffect, useState } from "react";
+import { useGetTasksQuery } from "@/features/tasks/api/tasksApi";
 import { TaskCreateForm } from "@/features/tasks/forms/createForm/components/TaskCreationForm";
 import { TaskDetailPage } from "@/features/tasks/components/TaskDetailPage";
 
 export default function TasksMasterDetailPage() {
-  const { data: tasks, isLoading, error } = useGetActualTasksQuery();
+    // по умолчанию actual
+    const [statusFilter, setStatusFilter] = useState<
+    "all" | "actual" | "done" | "done-positive" | "done-negative"
+  >("actual");
+  const { data: tasks, isLoading, error } = useGetTasksQuery(statusFilter);
   const [selectedId, setSelectedId] = useState<number | null>(null);
-  const [showCreateForm, setShowCreateForm] = useState(false);
-
+  const [showCreateForm, setShowCreateForm] = useState(false);  
+  
+  // при смене фильтра сбрасываем выбор, чтобы не показывать деталь, которой нет в текущем списке
+  useEffect(() => {
+    setSelectedId(null);
+    setShowCreateForm(false);
+  }, [statusFilter]);
 
   const handleCreateClick = () => {
     setSelectedId(null); // сбрасываем выбранную задачу
     setShowCreateForm(true); // показываем форму
   };
 
-  const handleFormSuccess = () => {
-    setShowCreateForm(false);
-  };
-
   if (isLoading) return <p className="p-4">Загрузка задач...</p>;
   if (error) return <p className="p-4 text-red-600">Ошибка загрузки задач</p>;
+
+  const results = tasks?.results ?? [];
 
   return (
     <div className="flex h-screen">
@@ -37,8 +44,26 @@ export default function TasksMasterDetailPage() {
           </button>
         </div>
 
-        {Array.isArray(tasks) ? (
-          tasks.map((task) => (
+        
+        {/* Селект фильтра — по умолчанию "actual" */}
+        <div className="mb-4">
+          <select
+            value={statusFilter}
+            onChange={(e) =>
+              setStatusFilter(e.target.value as typeof statusFilter)
+            }
+            className="border px-2 py-1 rounded w-full"
+          >
+            <option value="all">Все</option>
+            <option value="actual">Актуальные</option>
+            <option value="done">Выполненные</option>
+            <option value="done-positive">Успешные</option>
+            <option value="done-negative">Неуспешные</option>
+          </select>
+        </div>
+
+        {tasks?.results?.length ? (
+          tasks.results.map((task) => (
             <div
               key={task.id}
               className={`p-3 mb-2 border rounded cursor-pointer hover:bg-gray-100 ${
@@ -71,7 +96,9 @@ export default function TasksMasterDetailPage() {
             >
               ❌ Закрыть форму 
             </button>
-            <TaskCreateForm onSuccess={handleFormSuccess}/>
+            <TaskCreateForm
+                type="independent"
+                onSuccess={() => setShowCreateForm(false)}/>
           </>
         )}
 

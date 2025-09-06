@@ -5,14 +5,13 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { z } from "zod";
 import { useUpdateTaskMutation } from "@/features/tasks/api/tasksApi";
-import { taskUpdateSchema } from "@/share/services/auth/validation/authSchema";
-import { Task } from "@/types/taskType";
-import { useGetProjectLabelsQuery } from "@/features/projects/api/projectApi";
+import { TaskId } from "@/features/tasks/types/taskType";
+import { taskUpdateSchema } from "@/features/tasks/services/validation/taskSchema";
 
 type TaskFormData = z.infer<typeof taskUpdateSchema>;
 
 type Props = {
-  task: Task;
+  task: TaskId;
   onSuccess?: () => void;
 };
 
@@ -35,7 +34,6 @@ export function TaskEditForm({ task, onSuccess }: Props) {
   const [updateTask] = useUpdateTaskMutation();
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
-  const { data: projectOptions, isLoading: isProjectLoading } = useGetProjectLabelsQuery();
 
   const onSubmit = async (data: TaskFormData) => {
     try {
@@ -77,26 +75,6 @@ export function TaskEditForm({ task, onSuccess }: Props) {
         </div>
       ))}
 
-      <div className="flex flex-col">
-        <label className="text-sm font-medium mb-1">Проекты</label>
-        {isProjectLoading ? (
-          <p className="text-sm italic text-gray-500">Загрузка...</p>
-        ) : (
-          <select
-          {...register("project", {
-            setValueAs: (v) => v === "" ? null : Number(v),
-          })}
-            className="border border-gray-300 rounded px-3 py-2"
-          >
-            <option value="">Не выбрано</option>
-            {projectOptions?.map((label) => (
-              <option key={label.id} value={label.id}>
-                {label.label}
-              </option>
-            ))}
-          </select>
-        )}
-      </div>
       {errors.project && (
         <p className="text-red-600 text-sm mt-1">
           {errors.project.message}

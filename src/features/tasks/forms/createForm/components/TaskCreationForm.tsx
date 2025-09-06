@@ -3,27 +3,45 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { useCreateTaskMutation, useGetTaskLabelsQuery } from "@/features/tasks/api/tasksApi";
-import { useGetApplicationLabelsQuery } from "@/features/applications/api/appApi";
-import { useGetProjectLabelsQuery } from "@/features/projects/api/projectApi";
-import { taskSchema } from "@/share/services/auth/validation/authSchema";
+import { useCreateTaskMutation } from "@/features/tasks/api/tasksApi";
 import { useState } from "react";
+import { taskSchema } from "@/features/tasks/services/validation/taskSchema";
 
 type FormValues = z.infer<typeof taskSchema>;
 
-type Props = {
-  onSuccess?: () => void;
-};
+type Props =
+  | {
+      type: "from-task";
+      previousTaskId: number;
+      previousTaskLabel: string;
+      applicationId?: number;
+      applicationLabel?: string;
+      onSuccess?: () => void;
+    }
+  | {
+      type: "independent";
+      onSuccess?: () => void;
+    }
+  | {
+      type: "from-application";
+      applicationId: number;
+      applicationLabel: string;
+      onSuccess?: () => void;
+    };
 
-export const TaskCreateForm = ({ onSuccess }: Props) => {
+export const TaskCreateForm = (props: Props) => {
+    const { onSuccess } = props;
   const [createTask] = useCreateTaskMutation();
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
 
-  const { data: taskOptions, isLoading: isTaskLoading } = useGetTaskLabelsQuery();
-  const { data: applicationOptions, isLoading: isApplicationLoading } = useGetApplicationLabelsQuery();
-  const { data: projectOptions, isLoading: isProjectLoading } = useGetProjectLabelsQuery();
-
+  const defaultValues = {
+    previous_task: props.type === "from-task" ? props.previousTaskId : null,
+    application:
+      props.type === "from-task" || props.type === "from-application"
+        ? props.applicationId
+        : null,
+  };
   const {
     register,
     handleSubmit,
@@ -31,14 +49,14 @@ export const TaskCreateForm = ({ onSuccess }: Props) => {
     reset,
   } = useForm<FormValues>({
     resolver: zodResolver(taskSchema),
+    defaultValues
   });
 
   const onSubmit = async (data: FormValues) => {
     const payload = {
       ...data,
       application: data.application ? Number(data.application) : null,
-      project: data.project ? Number(data.project) : null,
-      previous_task: data.previous_task ? Number(data.previous_task) : null,
+      previous_task: data.previous_task ?? null,
       action: data.action || null,
       action_date: data.action_date || null,
       action_time: data.action_time || null,
@@ -86,85 +104,40 @@ export const TaskCreateForm = ({ onSuccess }: Props) => {
 
       <div className="flex flex-col">
           <label className="text-sm font-medium mb-1">Действие</label>
-          <select
+          <input
           {...register("action")}
-          defaultValue="Действие"
           className="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
-          >
-          <option value="" hidden>Не выбрано</option>
-          <option value="meet">meet</option>
-          <option value="call">call</option>
-          </select>
+          />
           {errors.action && (
           <p className="text-red-600 text-sm mt-1">{errors.action.message}</p>
           )}
       </div>
 
-      {/* Предыдущая задача */}
-      <div className="flex flex-col">
-        <label className="text-sm font-medium mb-1">Предыдущая задача</label>
-        {isTaskLoading ? (
-          <p className="text-sm italic text-gray-500">Загрузка...</p>
-        ) : (
-          <select
-            {...register("previous_task", {
-              setValueAs: (v) => v === "" ? null : Number(v),
-            })}
-            className="border border-gray-300 rounded px-3 py-2"
-          >
-            <option value="">Не выбрано</option>
-            {taskOptions?.map((task) => (
-              <option key={task.id} value={task.id}>
-                {task.label}
-              </option>
-            ))}
-          </select>
-        )}
-      </div>
+      {/* если из задачи → показываем предыдущую задачу */}
+      {props.type === "from-task" && (
+        <div className="flex flex-col">
+          <label className="text-sm font-medium mb-1">Предыдущая задача</label>
+          <input 
+            type="text"
+            value={props.previousTaskLabel} 
+            readOnly 
+            className="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+        />
+        </div>
+      )}
 
-      {/* Заявка */}
-      <div className="flex flex-col">
-        <label className="text-sm font-medium mb-1">Заявка</label>
-        {isApplicationLoading ? (
-          <p className="text-sm italic text-gray-500">Загрузка...</p>
-        ) : (
-          <select
-            {...register("application", {
-              setValueAs: (v) => v === "" ? null : Number(v),
-            })}
-            className="border border-gray-300 rounded px-3 py-2"
-          >
-            <option value="">Не выбрано</option>
-            {applicationOptions?.map((app) => (
-              <option key={app.id} value={app.id}>
-                {app.label}
-              </option>
-            ))}
-          </select>
-        )}
-      </div>
-
-      {/* Проект */}
-      <div className="flex flex-col">
-        <label className="text-sm font-medium mb-1">Проект</label>
-        {isProjectLoading ? (
-          <p className="text-sm italic text-gray-500">Загрузка...</p>
-        ) : (
-          <select
-            {...register("project", {
-              setValueAs: (v) => v === "" ? null : Number(v),
-            })}
-            className="border border-gray-300 rounded px-3 py-2"
-          >
-            <option value="">Не выбрано</option>
-            {projectOptions?.map((proj) => (
-              <option key={proj.id} value={proj.id}>
-                {proj.label}
-              </option>
-            ))}
-          </select>
-        )}
-      </div>
+      {/* поле заявки */}
+      {props.type === "from-task" || props.type === "from-application" ? (
+        <div className="flex flex-col">
+          <label>Заявка</label>
+          <input
+            type="text"
+            value={props.applicationLabel || "Без заявки"}
+            readOnly
+            className="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+          />
+        </div>
+      ) : null}
 
       {/* Сообщения */}
       {success && <p className="text-green-600">✅ Задача успешно создана</p>}
