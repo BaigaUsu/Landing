@@ -3,31 +3,29 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
-import { z } from "zod";
 import { useUpdateProjectMutation } from "@/features/projects/api/projectApi";
-import { projectUpdateSchema } from "@/share/services/auth/validation/authSchema";
-import { Project } from "@/share/types/projects/projectTypes";
 import { useGetClientsQuery } from "@/share/api/usersApi";
-
-type ProjectFormData = z.infer<typeof projectUpdateSchema>;
+import { ProjectId } from "../../../types/projectTypes";
+import { ProjectUpdateFormValues, projectUpdateSchema } from "@/features/projects/services/validation/projectsCreateSchema";
 
 type Props = {
-  project: Project;
-  onSuccess?: () => void;
+    taskIds?: number[];
+    project: ProjectId;
+    onSuccess?: () => void;
 };
 
-export function ProjectEditForm({ project, onSuccess }: Props) {
-    const { register, handleSubmit, formState: { errors } } = useForm<ProjectFormData>({
+export function ProjectEditForm({ taskIds, project, onSuccess }: Props) {
+    const { register, handleSubmit, formState: { errors } } = useForm<ProjectUpdateFormValues>({
         resolver: zodResolver(projectUpdateSchema),
         defaultValues: {
         project_name: project.project_name,
-        client: project.client?.id || undefined,
         description: project.description || "",
         start_date: project.start_date || "",
         end_date: project.end_date || "",
         cost: Number(project.cost) || undefined,
         status: project.status || "",
         comment: project.comment || "",
+        tasks: project.tasks?.length ? project.tasks.map(t => t.id) : [],
         },
     });
 
@@ -36,7 +34,7 @@ export function ProjectEditForm({ project, onSuccess }: Props) {
     const [success, setSuccess] = useState(false);
     const { data: clients, isLoading: isClientsLoading } = useGetClientsQuery();
 
-    const onSubmit = async (data: ProjectFormData) => {
+    const onSubmit = async (data: ProjectUpdateFormValues) => {
         try {
         await updateProject({ id: project.id, data }).unwrap();
         setSuccess(true);
@@ -100,13 +98,13 @@ export function ProjectEditForm({ project, onSuccess }: Props) {
                 <div key={idx} className="flex flex-col">
                 <label className="text-sm font-medium mb-1">{field.label}</label>
                 <input
-                    {...register(field.name as keyof ProjectFormData)}
+                    {...register(field.name as keyof ProjectUpdateFormValues)}
                     type={field.type || "text"}
                     className="border border-gray-300 rounded px-3 py-2"
                 />
-                {errors[field.name as keyof ProjectFormData] && (
+                {errors[field.name as keyof ProjectUpdateFormValues] && (
                     <p className="text-red-600 text-sm mt-1">
-                    {errors[field.name as keyof ProjectFormData]?.message as string}
+                    {errors[field.name as keyof ProjectUpdateFormValues]?.message as string}
                     </p>
                 )}
                 </div>
@@ -115,18 +113,30 @@ export function ProjectEditForm({ project, onSuccess }: Props) {
             <div className="flex flex-col">
                 <label className="text-sm font-medium mb-1">Статус</label>
                 <select
-                {...register("status")}
-                defaultValue="in-progress"
-                className="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                    {...register("status")}
+                    defaultValue="in-progress"
+                    className="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
                 >
-                <option value="in-progress">in-progress</option>
-                <option value="completed">completed</option>
-                <option value="not-completed">not-completed</option>
+                    <option value="in-progress">in-progress</option>
+                    <option value="completed">completed</option>
+                    <option value="not-completed">not-completed</option>
                 </select>
                 {errors.status && (
                 <p className="text-red-600 text-sm mt-1">{errors.status.message}</p>
                 )}
             </div>
+
+            {taskIds ? (
+                <div className="flex flex-col">
+                    <label className="text-sm font-medium mb-1">Задача</label>
+                    <input
+                        type="text"
+                        value={`${taskIds}`}
+                        readOnly
+                        className="border border-gray-300 rounded px-3 py-2 bg-gray-100"
+                    />
+                </div>
+            ) : null}
 
             {success && <p className="text-green-600">✅ Проект успешно обновлен</p>}
             {errorMsg && <p className="text-red-600">{errorMsg}</p>}

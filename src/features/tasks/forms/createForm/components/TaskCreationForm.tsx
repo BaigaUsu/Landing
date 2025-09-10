@@ -11,22 +11,24 @@ type FormValues = z.infer<typeof taskSchema>;
 
 type Props =
   | {
-      type: "from-task";
-      previousTaskId: number;
-      previousTaskLabel: string;
-      applicationId?: number;
-      applicationLabel?: string;
-      onSuccess?: () => void;
+        type: "from-task";
+        previousTaskId: number;
+        previousTaskLabel: string;
+        applicationId?: number;
+        applicationLabel?: string;
+        projectId?: number;
+        projectLabel?: string;
+        onSuccess?: () => void;
     }
   | {
-      type: "independent";
-      onSuccess?: () => void;
+        type: "independent";
+        onSuccess?: () => void;
     }
   | {
-      type: "from-application";
-      applicationId: number;
-      applicationLabel: string;
-      onSuccess?: () => void;
+        type: "from-application";
+        applicationId: number;
+        applicationLabel: string;
+        onSuccess?: () => void;
     };
 
 export const TaskCreateForm = (props: Props) => {
@@ -41,6 +43,7 @@ export const TaskCreateForm = (props: Props) => {
       props.type === "from-task" || props.type === "from-application"
         ? props.applicationId
         : null,
+    project: props.type === "from-task" ? props.projectId || null : null,
   };
   const {
     register,
@@ -133,6 +136,18 @@ export const TaskCreateForm = (props: Props) => {
           <input
             type="text"
             value={props.applicationLabel || "Без заявки"}
+            readOnly
+            className="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+          />
+        </div>
+      ) : null}
+        {/* поле проекта */}
+        {props.type === "from-task" ? (
+        <div className="flex flex-col">
+          <label>Проект</label>
+          <input
+            type="text"
+            value={props.projectLabel || "Без проекта"}
             readOnly
             className="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
           />

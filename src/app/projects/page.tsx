@@ -1,19 +1,14 @@
 'use client';
 
 import { useState } from "react";
-import { useGetActualProjectsQuery, useGetProjectsQuery } from "@/features/projects/api/projectApi";
+import { useGetProjectsQuery } from "@/features/projects/api/projectApi";
 import { ProjectCreateForm } from "@/features/projects/forms/create/components/ProjectCreationForm";
 import { ProjectDetailPage } from "@/features/projects/components/ProjectDetailPage";
 
 export default function ProjectsMasterDetailPage() {
-  const { data: projects, isLoading, error } = useGetActualProjectsQuery();
+  const { data: projects, isLoading, error } = useGetProjectsQuery('actual');
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const [showCreateForm, setShowCreateForm] = useState(false);
-
-  const handleCreateClick = () => {
-    setSelectedId(null);
-    setShowCreateForm(true);
-  };
 
   const handleFormSuccess = () => {
     setShowCreateForm(false);
@@ -28,32 +23,26 @@ export default function ProjectsMasterDetailPage() {
       <div className="w-1/3 border-r overflow-y-auto p-4">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-lg font-semibold">Проекты</h2>
-          <button
-            onClick={handleCreateClick}
-            className="bg-blue-600 text-white px-3 py-1 text-sm rounded"
-          >
-            + Создать
-          </button>
         </div>
 
-        {Array.isArray(projects) ? (
-          projects.map((project) => (
-            <div
-              key={project.id}
-              className={`p-3 mb-2 border rounded cursor-pointer hover:bg-gray-100 ${
-                selectedId === project.id && !showCreateForm ? "bg-blue-100" : ""
-              }`}
-              onClick={() => {
-                setSelectedId(project.id);
-                setShowCreateForm(false);
-              }}
-            >
-              <p className="font-semibold">{project.project_name}</p>
-              <p className="text-sm text-gray-600">{project.status}</p>
-            </div>
-          ))
+        {projects?.results?.length ? (
+            projects.results.map((project) => (
+                <div
+                    key={project.id}
+                    className={`p-3 mb-2 border rounded cursor-pointer hover:bg-gray-100 ${
+                        selectedId === project.id && !showCreateForm ? "bg-blue-100" : ""
+                    }`}
+                    onClick={() => {
+                        setSelectedId(project.id);
+                        setShowCreateForm(false);
+                    }}
+                >
+                    <p className="font-semibold">{project.project_name}</p>
+                    <p className="text-sm text-gray-600">{project.status}</p>
+                </div>
+            ))
         ) : (
-          <p>Нет проектов</p>
+            <p>Нет проектов</p>
         )}
       </div>
 

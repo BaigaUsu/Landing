@@ -1,26 +1,23 @@
 import { rootApi } from "@/RTKQuery/api/rootApi";
-import { Project, ProjectRequest } from "@/share/types/projects/projectTypes";
+import { Project, ProjectId, ProjectPostRequest, ProjectUpdateRequest, } from "@/features/projects/types/projectTypes";
 
 export const projectsApi = rootApi.injectEndpoints({
   overrideExisting: true,
   endpoints: (build) => ({
-    getProjects: build.query<Project[], void>({
-      query: () => ({
+    getProjects: build.query<Project, string | undefined>({
+      query: (status) => ({
         url: `/projects/`,
         method: "GET",
+        params: status ? { status } : undefined,
       }),
+      transformResponse: (response: any) => {
+        console.log('API response:', response);
+        return response;
+      },
       providesTags: ['Projects'],
     }),
 
-    getActualProjects: build.query<Project[], void>({
-      query: () => ({
-        url: `/projects/actual/`,
-        method: "GET",
-      }),
-      providesTags: ['Projects'],
-    }),
-
-    getProjectById: build.query<Project, number>({
+    getProjectById: build.query<ProjectId, number>({
       query: (id) => ({
         url: `/projects/${id}/`,
         method: "GET",
@@ -28,7 +25,7 @@ export const projectsApi = rootApi.injectEndpoints({
       providesTags: (result, error, id) => [{ type: 'Stages', id }, {type: 'Projects'}],
     }),
 
-    createProject: build.mutation<Project, ProjectRequest>({
+    createProject: build.mutation<ProjectId, ProjectPostRequest>({
       query: (body) => ({
         url: `/projects/`,
         method: "POST",
@@ -44,7 +41,7 @@ export const projectsApi = rootApi.injectEndpoints({
       }),
     }),
 
-    updateProject: build.mutation<Project, { id: number; data: ProjectRequest }>({
+    updateProject: build.mutation<ProjectId, { id: number; data: ProjectUpdateRequest }>({
       query: ({ id, data }) => ({
         url: `/projects/${id}/`,
         method: "PUT",
@@ -53,7 +50,7 @@ export const projectsApi = rootApi.injectEndpoints({
       invalidatesTags: ['Projects'],
     }),
 
-    patchProject: build.mutation<Project, { id: number; data: Partial<ProjectRequest> }>({
+    patchProject: build.mutation<Project, { id: number; data: Partial<ProjectUpdateRequest> }>({
       query: ({ id, data }) => ({
         url: `/projects/${id}/`,
         method: "PATCH",
@@ -74,7 +71,6 @@ export const projectsApi = rootApi.injectEndpoints({
 
 export const {
   useGetProjectsQuery,
-  useGetActualProjectsQuery,
   useGetProjectByIdQuery,
   useCreateProjectMutation,
   useGetProjectLabelsQuery,

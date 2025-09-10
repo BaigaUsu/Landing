@@ -1,26 +1,28 @@
 "use client";
 
 import { useForm } from "react-hook-form";
-import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useCreateProjectMutation } from "@/features/projects/api/projectApi";
 import { useState } from "react";
-import { projectSchema } from "@/share/services/auth/validation/authSchema";
 import { useGetClientsQuery } from "@/share/api/usersApi";
-import { useGetApplicationLabelsQuery } from "@/features/applications/api/appApi";
-
-type FormValues = z.infer<typeof projectSchema>;
+import { ProjectCreateFormValues, projectCreateSchema } from "../../../services/validation/projectsCreateSchema";
 
 type Props = {
-  onSuccess?: () => void;
+    taskIds?: number[];
+    applicationId?: number;
+    applicationLabel?: string;
+    onSuccess?: () => void;
 };
 
-export const ProjectCreateForm = ({ onSuccess }: Props) => {
+export const ProjectCreateForm = ({ taskIds, applicationId, applicationLabel, onSuccess }: Props) => {
   const [createProject] = useCreateProjectMutation();
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
 
-  const { data: applicationOptions, isLoading: isAppLoading } = useGetApplicationLabelsQuery();
+  const defaultValues: Partial<ProjectCreateFormValues> = {
+    application: applicationId || null,
+    tasks: taskIds || [], // ← вот так
+  };
   const { data: clientOptions, isLoading: isClientLoading } = useGetClientsQuery();
 
   const {
@@ -28,17 +30,20 @@ export const ProjectCreateForm = ({ onSuccess }: Props) => {
     handleSubmit,
     formState: { errors },
     reset,
-  } = useForm<FormValues>({
-    resolver: zodResolver(projectSchema),
+  } = useForm<ProjectCreateFormValues>({
+    resolver: zodResolver(projectCreateSchema),
+    defaultValues
   });
 
-  const onSubmit = async (data: FormValues) => {
+  const onSubmit = async (data: ProjectCreateFormValues) => {
     const payload = {
       ...data,
       client: data.client ?? null,
       application: data.application ?? null,
       start_date: data.start_date || null,
       end_date: data.end_date || null,
+      tasks: data.tasks?.length ? data.tasks : [],
+
     };
 
     try {
@@ -131,7 +136,7 @@ export const ProjectCreateForm = ({ onSuccess }: Props) => {
       </div>
 
       {/* Статус */}
-      {/* <div className="flex flex-col">
+      <div className="flex flex-col">
         <label className="text-sm font-medium mb-1">Статус</label>
         <select
           {...register("status")}
@@ -145,29 +150,33 @@ export const ProjectCreateForm = ({ onSuccess }: Props) => {
         {errors.status && (
           <p className="text-red-600 text-sm mt-1">{errors.status.message}</p>
         )}
-      </div> */}
+      </div>
 
       {/* Заявка */}
-      <div className="flex flex-col">
-        <label className="text-sm font-medium mb-1">Заявка</label>
-        {isAppLoading ? (
-          <p className="italic text-gray-500">Загрузка заявок...</p>
-        ) : (
-          <select
-            {...register("application", {
-              setValueAs: (v) => (v === "" ? null : Number(v)),
-            })}
-            className="border border-gray-300 rounded px-3 py-2"
-          >
-            <option value="" hidden>Не выбрано</option>
-            {applicationOptions?.map((app) => (
-              <option key={app.id} value={app.id}>
-                {app.label}
-              </option>
-            ))}
-          </select>
-        )}
-      </div>
+      {applicationId ? (
+        <div className="flex flex-col">
+          <label className="text-sm font-medium mb-1">Заявка</label>
+          <input
+            type="text"
+            value={applicationLabel || "Без заявки"}
+            readOnly
+            className="border border-gray-300 rounded px-3 py-2 bg-gray-100"
+          />
+        </div>
+      ) : null}
+
+      {/* Задачи */}
+      {taskIds ? (
+        <div className="flex flex-col">
+          <label className="text-sm font-medium mb-1">Задача</label>
+          <input
+            type="text"
+            value={`${taskIds}`}
+            readOnly
+            className="border border-gray-300 rounded px-3 py-2 bg-gray-100"
+          />
+        </div>
+      ) : null}
 
       {/* Сообщения */}
       {success && <p className="text-green-600">✅ Проект успешно создан</p>}
