@@ -5,9 +5,10 @@ import { useGetProjectByIdQuery, useDeleteProjectMutation } from "@/features/pro
 import { ProjectEditForm } from "@/features/projects/forms/edit/components/ProjectEditForm";
 import Link from "next/link";
 import { StageCreateForm } from "../../stages/create/components/StageCreationForm";
-import { useDeleteStageMutation } from "@/features/stages/api/stageApi";
 import { StageEditForm } from "../../stages/edit/components/StageEditForm";
-import { ServerStageType } from "@/features/stages/types/types";
+import { ServerStageType, ServerStageUrlKind } from "@/features/stages/types/types";
+import { useDeleteStageMutation } from "@/features/stages/api/specificStages";
+import { convertStageTypeToServerKind } from "@/features/stages/create/services/convertStageTypeToServerKind";
 
 type Props = {
   id: number;
@@ -27,9 +28,9 @@ export const ProjectDetailPage = ({ id, onDelete }: Props) => {
   if (isLoading) return <p>Загрузка данных проекта...</p>;
   if (!project) return <p className="text-gray-500 italic">Проект не найден</p>;
 
-  const handleStageDelete = async (stageId: number) => {
+  const handleStageDelete = async (stageId: number, kind: ServerStageUrlKind, projectId: number) => {
     try {
-      await deleteStages(stageId).unwrap();
+      await deleteStages({ id: projectId, kind, stageId }).unwrap();
       alert("Этап успешно удалён");
     } catch (err) {
       console.error(err);
@@ -50,16 +51,16 @@ export const ProjectDetailPage = ({ id, onDelete }: Props) => {
     }
   };
 
-  const getStageDisplayName = (type: ServerStageType): string => {
-    const displayNames: Record<ServerStageType, string> = {
-      "pre-project": "Предпроектная подготовка",
-      "conceptual design": "Концептуальный дизайн",
-      "detailed design": "Детальный дизайн", 
-      "material specification": "Спецификация материалов",
-      "author's supervisor": "Авторский надзор",
-    };
-    return displayNames[type] || type;
-  };
+//   const getStageDisplayName = (type: ServerStageType): string => {
+//     const displayNames: Record<ServerStageType, string> = {
+//       "pre-project": "Предпроектная подготовка",
+//       "conceptual design": "Концептуальный дизайн",
+//       "detailed design": "Детальный дизайн", 
+//       "material specification": "Спецификация материалов",
+//       "author's supervisor": "Авторский надзор",
+//     };
+//     return displayNames[type] || type;
+//   };
 
   return (
     <div>
@@ -153,7 +154,7 @@ export const ProjectDetailPage = ({ id, onDelete }: Props) => {
                 </div>
 
                 <StageEditForm
-                  stage={{ id: editingStageId, type: editingStageType }}
+                  stage={{ id: editingStageId, type: editingStageType, projectId: project.id }}
                   onSuccess={() => {
                     setEditingStageId(null);
                     setEditingStageType(null);
@@ -176,14 +177,14 @@ export const ProjectDetailPage = ({ id, onDelete }: Props) => {
                   <ul className="space-y-3 list-decimal ml-6">
                     {project.stages.map((stage) => (
                       <li key={stage.id} className="p-3 border rounded">
-                        <p><strong>Тип этапа:</strong> {stage.type}</p>
+                        <p><strong>Тип этапа:</strong> {stage.kind}</p>
                         <p><strong>Задача:</strong> {stage.task}</p>
                         <p><strong>Статус:</strong> {stage.status}</p>
 
                         <button
                           onClick={() => {
                             setEditingStageId(stage.id);
-                            setEditingStageType(stage.type as ServerStageType);
+                            setEditingStageType(stage.kind as ServerStageType);
                           }}
                           className="text-yellow-600 hover:text-yellow-800 text-sm"
                         >
@@ -191,10 +192,10 @@ export const ProjectDetailPage = ({ id, onDelete }: Props) => {
                         </button>
 
                         <button
-                          onClick={() => handleStageDelete(stage.id)}
-                          className="text-red-600 hover:text-red-800 text-sm ml-2"
+                        onClick={() => handleStageDelete(stage.id, convertStageTypeToServerKind(stage.kind as ServerStageType), project.id)}
+                        className="bg-red-600 text-white px-2 py-1 rounded hover:bg-red-700"
                         >
-                          🗑️ Удалить
+                        Удалить
                         </button>
                       </li>
                     ))}

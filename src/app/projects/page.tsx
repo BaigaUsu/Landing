@@ -10,6 +10,11 @@ export default function ProjectsMasterDetailPage() {
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const [showCreateForm, setShowCreateForm] = useState(false);
 
+  const handleCreateClick = () => {
+    setSelectedId(null);
+    setShowCreateForm(true);
+  };
+
   const handleFormSuccess = () => {
     setShowCreateForm(false);
   };
@@ -23,6 +28,12 @@ export default function ProjectsMasterDetailPage() {
       <div className="w-1/3 border-r overflow-y-auto p-4">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-lg font-semibold">Проекты</h2>
+          <button
+            onClick={handleCreateClick}
+            className="bg-blue-600 text-white px-3 py-1 text-sm rounded"
+          >
+            + Создать
+          </button>
         </div>
 
         {projects?.results?.length ? (

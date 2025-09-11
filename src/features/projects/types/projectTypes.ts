@@ -1,12 +1,12 @@
 import { ApplicationShort } from "@/share/types/applications/appShortTypes";
-import { Stage } from "@/share/types/stages/stagesTypes";
+import { Stage, StageList } from "@/share/types/stages/stagesTypes";
 import { TaskShort } from "@/share/types/tasks/taskShortTypes";
 
-export interface Project {
+export interface Project<T> {
     count: number;
     next: string | null;
     previous: string | null;
-    results: ProjectList[];
+    results: T[];
 }
 export interface ProjectList {
     id: number;
@@ -34,7 +34,7 @@ export interface ProjectList {
     updated_at: string;
     application: ApplicationShort | null;
     tasks: TaskShort[];
-    stages: Stage[];
+    stages: StageList[];
   }
 
 export interface ProjectPostRequest {

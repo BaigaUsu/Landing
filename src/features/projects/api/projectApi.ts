@@ -1,14 +1,14 @@
 import { rootApi } from "@/RTKQuery/api/rootApi";
-import { Project, ProjectId, ProjectPostRequest, ProjectUpdateRequest, } from "@/features/projects/types/projectTypes";
+import { Project, ProjectId, ProjectList, ProjectPostRequest, ProjectUpdateRequest, } from "@/features/projects/types/projectTypes";
 
 export const projectsApi = rootApi.injectEndpoints({
   overrideExisting: true,
   endpoints: (build) => ({
-    getProjects: build.query<Project, string | undefined>({
+    getProjects: build.query<Project<ProjectList>, string | undefined>({
       query: (status) => ({
         url: `/projects/`,
         method: "GET",
-        params: status ? { status } : undefined,
+        params: status ? { status: status } : undefined,
       }),
       transformResponse: (response: any) => {
         console.log('API response:', response);
@@ -50,7 +50,7 @@ export const projectsApi = rootApi.injectEndpoints({
       invalidatesTags: ['Projects'],
     }),
 
-    patchProject: build.mutation<Project, { id: number; data: Partial<ProjectUpdateRequest> }>({
+    patchProject: build.mutation<Project<ProjectList>, { id: number; data: Partial<ProjectUpdateRequest> }>({
       query: ({ id, data }) => ({
         url: `/projects/${id}/`,
         method: "PATCH",
