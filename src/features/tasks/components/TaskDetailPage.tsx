@@ -20,7 +20,6 @@ export function TaskDetailPage({ taskId, onCloseEdit, onDelete }: Props) {
   const [showEdit, setShowEdit] = useState(false);
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [showCreateProjectForm, setShowCreateProjectForm] = useState(false);
-
   const handleCreateClick = () => {
     setShowCreateProjectForm(true);
     setShowEdit(false);
@@ -48,17 +47,15 @@ return (
         {!showEdit && !showCreateForm && !showCreateProjectForm? (
         <>
             <h1 className="text-2xl font-bold mb-4">Задача #{task.id}</h1>
-            {task.status === 'done-positive' && !task.next_task ? (
                 <button
                     onClick={() => setShowCreateForm(true)}
                     className="bg-blue-600 text-white px-3 py-1 text-sm rounded"
                 >
                     Создать задачу
                 </button>
-            ) : null}
 
 
-            {task.status === 'done-positive' ? (<button
+            {task.status === 'done-positive' && !task.project ? (<button
                 onClick={handleCreateClick}
                 className="bg-blue-600 text-white px-3 py-1 text-sm rounded"
             >
@@ -93,16 +90,20 @@ return (
 
             <div className="mt-6">
                 <h2 className="font-semibold text-lg">Следующая задача</h2>
-                {task.next_task ? (
-                <div className="p-4 border rounded mt-2">
-                    <p><strong>ID:</strong> {task.next_task.id}</p>
-                    <p><strong>Действие:</strong> {task.next_task.action}</p>
-                    <p><strong>Дата:</strong> {task.next_task.action_date}</p>
-                    <p><strong>Время:</strong> {task.next_task.action_time}</p>
-                    <p><strong>Статус:</strong> {task.next_task.status}</p>
+                {task.next_tasks && task.next_tasks.length > 0 ? (
+                <div className="mt-2 space-y-2">
+                    {task.next_tasks.map((t) => (
+                    <div key={t.id} className="p-4 border rounded">
+                        <p><strong>ID:</strong> {t.id}</p>
+                        <p><strong>Действие:</strong> {t.action}</p>
+                        <p><strong>Дата:</strong> {t.action_date}</p>
+                        <p><strong>Время:</strong> {t.action_time}</p>
+                        <p><strong>Статус:</strong> {t.status}</p>
+                    </div>
+                    ))}
                 </div>
                 ) : (
-                <p className="text-gray-500 mt-2">Следующая задача не назначена</p>
+                <p className="text-gray-500 mt-2">Следующих задач не назначено</p>
                 )}
             </div>
 

@@ -1,14 +1,23 @@
 'use client';
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useGetProjectsQuery } from "@/features/projects/api/projectApi";
 import { ProjectCreateForm } from "@/features/projects/forms/create/components/ProjectCreationForm";
 import { ProjectDetailPage } from "@/features/projects/components/ProjectDetailPage";
 
 export default function ProjectsMasterDetailPage() {
-  const { data: projects, isLoading, error } = useGetProjectsQuery('actual');
+    const [statusFilter, setStatusFilter] = useState<
+    "all" | "actual" | "completed" | "not-completed"
+  >("actual");
+  const { data: projects, isLoading, error } = useGetProjectsQuery(statusFilter);
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const [showCreateForm, setShowCreateForm] = useState(false);
+
+  // при смене фильтра сбрасываем выбор, чтобы не показывать деталь, которой нет в текущем списке
+    useEffect(() => {
+      setSelectedId(null);
+      setShowCreateForm(false);
+    }, [statusFilter]);
 
   const handleCreateClick = () => {
     setSelectedId(null);
@@ -34,6 +43,22 @@ export default function ProjectsMasterDetailPage() {
           >
             + Создать
           </button>
+        </div>
+
+        {/* Селект фильтра — по умолчанию "actual" */}
+        <div className="mb-4">
+          <select
+            value={statusFilter}
+            onChange={(e) =>
+              setStatusFilter(e.target.value as typeof statusFilter)
+            }
+            className="border px-2 py-1 rounded w-full"
+          >
+            <option value="all">Все</option>
+            <option value="actual">Актуальные</option>
+            <option value="completed">Выполненные</option>
+            <option value="not-completed">Невыполненные</option>
+          </select>
         </div>
 
         {projects?.results?.length ? (

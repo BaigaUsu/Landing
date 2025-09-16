@@ -19,7 +19,7 @@ export interface TaskList {
     action_date: string;
     action_time: string;
     status: string;
-    next_task: TaskShort | null;
+    next_tasks: TaskShort | null;
 }
 
 export interface TaskId {
@@ -32,22 +32,22 @@ export interface TaskId {
     action_date: string;
     action_time: string;
     status: string;
-    next_task: TaskShort | null;
+    next_tasks: TaskShort [];
     previous_tasks: TaskShort[];
     application: ApplicationShort | null;
     project: ProjectShort | null;
 }
 
 export interface TaskCreateRequest {
-    name?: string;
-    surname?: string;
-    email?: string;
-    phone_number?: string;
-    action?: string | null;
-    action_date?: string | null;
-    action_time?: string | null;
-    previous_task?: number | null;
-    application?: number | null;
+    name: string;
+    surname: string;
+    email: string;
+    phone_number: string;
+    action: string | null;
+    action_date: string | null;
+    action_time: string | null;
+    previous_task: number | null;
+    application: number | null;
 }
 
 export interface TaskUpdateRequest {
