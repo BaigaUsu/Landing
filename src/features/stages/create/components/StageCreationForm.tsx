@@ -7,7 +7,7 @@ import { StageFormValues, stageSchema } from "@/features/stages/service/validati
 import {  getAvailableSpecializationNames, useSpecializationsByStage } from "@/features/stages/edit/hooks/useSpecializationsByStage";
 import { ServerStageType, ServerStageUrlKind } from "../../types/types";
 import { useStageCreateMutation } from "../hooks/useStateCreateMutation";
-import { convertStageTypeToServerKind } from "../services/convertStageTypeToServerKind";
+import { convertStageTypeToServerKind } from "../../service/convertStageTypeToServerKind";
 
 type Props = {
   projectId: number;

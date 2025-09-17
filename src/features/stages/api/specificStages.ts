@@ -1,5 +1,5 @@
 import { rootApi } from "@/RTKQuery/api/rootApi";
-import { Stage, StageCreateRequest, StageId, StageList, StageUpdateRequest } from "@/share/types/stages/stagesTypes";
+import { Stage, StageCreateRequest, StageId, StageList, StageUpdateRequest } from "@/features/stages/types/stagesTypes";
 import { ServerStageUrlKind } from "../types/types";
 
 export const specificStagesApi = rootApi.injectEndpoints({

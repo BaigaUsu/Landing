@@ -1,5 +1,5 @@
 import { Staff } from "../../../share/types/staffTypes";
-import { SubStage } from "../../../share/types/subStagesTypes";
+import { SubStage, SubStageList } from "../subStages/types/subStagesTypes";
 
 export interface Stage<T> {
     count: number;
@@ -36,7 +36,7 @@ export interface StageId {
         comment: string;
         created_at: string;
         updated_at: string;
-        substages: SubStage[];
+        substages: SubStageList[];
 }
 
 export interface StageCreateRequest {

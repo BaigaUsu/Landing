@@ -1,5 +1,5 @@
 import { ApplicationShort } from "@/share/types/applications/appShortTypes";
-import { Stage, StageList } from "@/share/types/stages/stagesTypes";
+import { Stage, StageList } from "@/features/stages/types/stagesTypes";
 import { TaskShort } from "@/share/types/tasks/taskShortTypes";
 
 export interface Project<T> {

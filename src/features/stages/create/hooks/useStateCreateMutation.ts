@@ -1,5 +1,5 @@
 import { useCreateStagesMutation } from "@/features/stages/api/specificStages";
-import { StageCreateRequest } from "@/share/types/stages/stagesTypes";
+import { StageCreateRequest } from "@/features/stages/types/stagesTypes";
 import { ServerStageUrlKind } from "../../types/types";
 
 export const useStageCreateMutation = () => {

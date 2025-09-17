@@ -1,5 +1,5 @@
 // src/features/stages/edit/hooks/useStageUpdateMutation.ts
-import { StageUpdateRequest } from "@/share/types/stages/stagesTypes";
+import { StageUpdateRequest } from "@/features/stages/types/stagesTypes";
 import { ServerStageUrlKind } from "../../types/types";
 import { useUpdateStagesMutation } from "../../api/specificStages";
 

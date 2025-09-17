@@ -8,9 +8,9 @@ import {
 import { STAGE_SPECIALIZATIONS_CONFIG, useSpecializationsByStage } from "./useSpecializationsByStage";
 import { ServerStageType, ServerStageUrlKind, StageWithType } from "../../types/types";
 import { useStageUpdateMutation } from "./useStageMutation";
-import { StageUpdateRequest } from "@/share/types/stages/stagesTypes";
+import { StageUpdateRequest } from "@/features/stages/types/stagesTypes";
 import { useGetStagesByIdQuery } from "../../api/specificStages";
-import { convertStageTypeToServerKind } from "../../create/services/convertStageTypeToServerKind";
+import { convertStageTypeToServerKind } from "../../service/convertStageTypeToServerKind";
 
 type Props = {
     stage: StageWithType;

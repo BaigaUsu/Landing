@@ -1,4 +1,4 @@
-import { ServerStageType, ServerStageUrlKind } from "../../types/types";
+import { ServerStageType, ServerStageUrlKind } from "../types/types";
 
 
 export const convertStageTypeToServerKind = (kind: ServerStageType): ServerStageUrlKind => {
