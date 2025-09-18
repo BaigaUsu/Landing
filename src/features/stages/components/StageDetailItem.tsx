@@ -4,6 +4,7 @@ import { useGetStagesByIdQuery } from "@/features/stages/api/specificStages";
 import { ServerStageType, ServerStageUrlKind } from "@/features/stages/types/types";
 import { convertStageTypeToServerKind } from "../service/convertStageTypeToServerKind";
 import { SubStageList } from "../subStages/types/subStagesTypes";
+import { useDeleteSubStagesMutation } from "../subStages/api/subStagesApi";
 
 type StageDetailItemProps = {
   stage: { id: number; kind: string };
@@ -20,6 +21,21 @@ export const StageDetailItem = ({ stage, projectId, onEdit, onDelete }: StageDet
     kind: stageKind,
     stageId: stage.id,
   });
+
+  const [deleteSubStage, { isLoading: isDeleting }] = useDeleteSubStagesMutation();
+
+  const handleDeleteSubStage = async (subStageId: number) => {
+    try {
+      await deleteSubStage({
+        id: projectId,
+        kind: stageKind,
+        stageId: stage.id,
+        subStageId,
+      }).unwrap();
+    } catch (err) {
+      console.error("Ошибка при удалении подэтапа", err);
+    }
+  };
 
   if (isLoading) return <li className="p-3 border rounded">Загрузка данных этапа...</li>;
   if (isError || !detailedStage) return <li className="p-3 border rounded text-red-500">Ошибка при загрузке этапа.</li>;
@@ -59,6 +75,14 @@ export const StageDetailItem = ({ stage, projectId, onEdit, onDelete }: StageDet
                 <p><strong>Подэтап:</strong> {substage.title || "Нет имени"}</p>
                 <p><strong>Статус:</strong> {substage.status}</p>
                 <p><strong>Задача:</strong> {substage.task}</p>
+
+                <button
+                  onClick={() => handleDeleteSubStage(substage.id)}
+                  disabled={isDeleting}
+                  className="mt-2 bg-red-500 text-white px-2 py-1 text-xs rounded hover:bg-red-600 disabled:opacity-50"
+                >
+                  {isDeleting ? "Удаление..." : "Удалить подэтап"}
+                </button>
               </li>
             ))}
           </ul>

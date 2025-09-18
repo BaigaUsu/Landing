@@ -2,10 +2,9 @@ import { NextRequest } from "next/server";
 
 export async function GET(req: NextRequest, { params }: { params: { id: string; kind: string; stageId: string } }) {
   try {
-    const { id, kind, stageId } = params; // ✅ await по новым правилам\
-    const stageIdNum = Number(stageId);
+    const { id, kind, stageId } = params;
 
-    const res = await fetch(`${process.env.API_URL}/projects/${id}/stages/${kind}/${stageIdNum}/`);
+    const res = await fetch(`${process.env.API_URL}/projects/${id}/stages/${kind}/${stageId}/`);
     if (!res.ok) {
       const errorText = await res.text();
       console.error("Ошибка от бэкенда:", errorText);

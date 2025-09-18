@@ -40,7 +40,7 @@ export const subStages = rootApi.injectEndpoints({
                 method: 'DELETE',
                 url: `/projects/${id}/stages/${kind}/${stageId}/substages/${subStageId}/`,
             }),
-            invalidatesTags: ['SubStages'],
+            invalidatesTags: ['Stages', 'SubStages'],
         }),
     })
 });
