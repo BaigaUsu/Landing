@@ -11,6 +11,7 @@ import { useDeleteStageMutation } from "@/features/stages/api/specificStages";
 import { StageDetailItem } from "@/features/stages/components/StageDetailItem";
 import { SubStageCreateForm } from "@/features/stages/subStages/create/SubStageCreateForm";
 import { convertStageTypeToServerKind } from "@/features/stages/service/convertStageTypeToServerKind";
+import FileUploader from "./FileUploader";
 
 type Props = {
   id: number;
@@ -27,6 +28,13 @@ export const ProjectDetailPage = ({ id, onDelete }: Props) => {
     const [showEdit, setShowEdit] = useState(false);
     const [creatingStageType, setCreatingStageType] = useState<ServerStageType | null>(null);
     const [showSubForm, setShowSubForm] = useState<number | null>(null);
+
+    const FILE_CATEGORIES = [
+        { key: "documents", label: "Документы" },
+        { key: "final-project", label: "Финальный проект" },
+        { key: "estimate", label: "Смета" },
+        { key: "suppliers", label: "Поставщики" },
+      ] as const;
 
     if (isLoading) return <p>Загрузка данных проекта...</p>;
     if (!project) return <p className="text-gray-500 italic">Проект не найден</p>;
@@ -58,7 +66,7 @@ export const ProjectDetailPage = ({ id, onDelete }: Props) => {
         <div>
             {!showEdit ? (
                 <>
-                <h1 className="text-2xl font-bold mb-4">{project.project_name}</h1>
+                <h1 className="flex items-center text-2xl font-bold mb-4">{project.project_name}</h1>
 
                 <div className="flex gap-2 mb-4">
                     <button
@@ -75,7 +83,14 @@ export const ProjectDetailPage = ({ id, onDelete }: Props) => {
                     >
                         🗑️ Удалить
                     </button>
+                    {FILE_CATEGORIES.map(cat => (
+                        <div key={cat.key} className="border rounded-lg p-4 bg-gray-50 space-y-2">
+                        <h3 className="text-gray-700 font-medium text-lg">{cat.label}</h3>
+                        <FileUploader id={String(project.id)} category={cat.key} />
+                        </div>
+                    ))}
                 </div>
+                
 
                 <div className="mb-6 space-y-2">
                     <p><strong>Клиент:</strong> {project.client} </p>
