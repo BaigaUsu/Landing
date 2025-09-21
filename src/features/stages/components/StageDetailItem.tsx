@@ -5,6 +5,7 @@ import { ServerStageType, ServerStageUrlKind } from "@/features/stages/types/typ
 import { convertStageTypeToServerKind } from "../service/convertStageTypeToServerKind";
 import { SubStageList } from "../subStages/types/subStagesTypes";
 import { useDeleteSubStagesMutation } from "../subStages/api/subStagesApi";
+import { StagesFileUploader } from "./StagesFileUploader";
 
 type StageDetailItemProps = {
   stage: { id: number; kind: string };
@@ -12,6 +13,14 @@ type StageDetailItemProps = {
   onEdit: (stageId: number, stageType: ServerStageType) => void;
   onDelete: (stageId: number, kind: ServerStageUrlKind, projectId: number) => void;
 };
+
+const FILE_CATEGORIES_MAP: Record<ServerStageUrlKind, string[]> = {
+    'pre-projects': ['documents','media'],
+    'conceptual-designs': ['documents','render'],
+    'detailed-designs': ['documents','drawings'],
+    'material-specifications': ['documents'],
+    'authors-supervisors': ['documents','suppliers'],
+  };
 
 export const StageDetailItem = ({ stage, projectId, onEdit, onDelete }: StageDetailItemProps) => {
   const stageKind = convertStageTypeToServerKind(stage.kind as ServerStageType);
@@ -39,7 +48,7 @@ export const StageDetailItem = ({ stage, projectId, onEdit, onDelete }: StageDet
 
   if (isLoading) return <li className="p-3 border rounded">Загрузка данных этапа...</li>;
   if (isError || !detailedStage) return <li className="p-3 border rounded text-red-500">Ошибка при загрузке этапа.</li>;
-
+  
   return (
     <li className="space-y-2">
       {/* Основная информация об этапе */}
@@ -64,6 +73,16 @@ export const StageDetailItem = ({ stage, projectId, onEdit, onDelete }: StageDet
           Удалить
         </button>
       </div>
+
+            {FILE_CATEGORIES_MAP[stageKind].map(cat => (
+                <StagesFileUploader
+                    key={cat}
+                    id={projectId}
+                    kind={stageKind}
+                    stageId={stage.id}
+                    category={cat}
+                />
+                ))};
 
       {/* Подэтапы */}
       {detailedStage.substages && detailedStage.substages.length > 0 && (
