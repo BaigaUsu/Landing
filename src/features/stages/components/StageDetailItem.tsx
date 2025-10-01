@@ -6,6 +6,7 @@ import { convertStageTypeToServerKind } from "../service/convertStageTypeToServe
 import { SubStageList } from "../subStages/types/subStagesTypes";
 import { useDeleteSubStagesMutation } from "../subStages/api/subStagesApi";
 import { StagesFileUploader } from "./StagesFileUploader";
+import { SubStagesFileUploader } from "../subStages/components/SubStagesFileUploader";
 
 type StageDetailItemProps = {
   stage: { id: number; kind: string };
@@ -21,6 +22,12 @@ const FILE_CATEGORIES_MAP: Record<ServerStageUrlKind, string[]> = {
     'material-specifications': ['documents'],
     'authors-supervisors': ['documents','suppliers'],
   };
+
+  const SUB_STAGES_FILE_CATEGORIES = [
+    { key: "documents", label: "Документы" },
+    { key: "drawings", label: "Картинки" },
+    { key: "render", label: "Рендер" },
+  ] as const;
 
 export const StageDetailItem = ({ stage, projectId, onEdit, onDelete }: StageDetailItemProps) => {
   const stageKind = convertStageTypeToServerKind(stage.kind as ServerStageType);
@@ -102,6 +109,13 @@ export const StageDetailItem = ({ stage, projectId, onEdit, onDelete }: StageDet
                 >
                   {isDeleting ? "Удаление..." : "Удалить подэтап"}
                 </button>
+
+                {SUB_STAGES_FILE_CATEGORIES.map(cat => (
+                    <div key={cat.key} className="border rounded-lg p-4 bg-gray-50 space-y-2">
+                    <h3 className="text-gray-700 font-medium text-lg">{cat.label}</h3>
+                    <SubStagesFileUploader id={projectId} kind={stageKind} stageId={stage.id} subStageId={substage.id} category={cat.key} />
+                    </div>
+                ))}
               </li>
             ))}
           </ul>
