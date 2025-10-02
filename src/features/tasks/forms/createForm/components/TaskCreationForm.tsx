@@ -11,7 +11,7 @@ type FormValues = z.infer<typeof taskSchema>;
 
 type Props =
   | {
-        type: "from-task";
+        type: "form-task";
         previousTaskId: number;
         previousTaskLabel: string;
         applicationId?: number;
@@ -25,7 +25,7 @@ type Props =
         onSuccess?: () => void;
     }
   | {
-        type: "from-application";
+        type: "form-application";
         applicationId: number;
         applicationLabel: string;
         onSuccess?: () => void;
@@ -38,12 +38,12 @@ export const TaskCreateForm = (props: Props) => {
   const [success, setSuccess] = useState(false);
 
   const defaultValues = {
-    previous_task: props.type === "from-task" ? props.previousTaskId : null,
+    previous_task: props.type === "form-task" ? props.previousTaskId : null,
     application:
-      props.type === "from-task" || props.type === "from-application"
+      props.type === "form-task" || props.type === "form-application"
         ? props.applicationId
         : null,
-    project: props.type === "from-task" ? props.projectId || null : null,
+    project: props.type === "form-task" ? props.projectId || null : null,
   };
   const {
     register,
@@ -117,7 +117,7 @@ export const TaskCreateForm = (props: Props) => {
       </div>
 
       {/* если из задачи → показываем предыдущую задачу */}
-      {props.type === "from-task" && (
+      {props.type === "form-task" && (
         <div className="flex flex-col">
           <label className="text-sm font-medium mb-1">Предыдущая задача</label>
           <input 
@@ -130,7 +130,7 @@ export const TaskCreateForm = (props: Props) => {
       )}
 
       {/* поле заявки */}
-      {props.type === "from-task" || props.type === "from-application" ? (
+      {props.type === "form-task" || props.type === "form-application" ? (
         <div className="flex flex-col">
           <label>Заявка</label>
           <input
@@ -142,7 +142,7 @@ export const TaskCreateForm = (props: Props) => {
         </div>
       ) : null}
         {/* поле проекта */}
-        {props.type === "from-task" ? (
+        {props.type === "form-task" ? (
         <div className="flex flex-col">
           <label>Проект</label>
           <input
