@@ -164,7 +164,7 @@ return (
             </button>
 
             <TaskCreateForm
-                type="from-task"               // <-- тип создания
+                type="form-task"               // <-- тип создания
                 applicationId={task.application?.id} // <-- текущая заявка
                 applicationLabel={task.application?.email} 
                 previousTaskId={task.id}          // <-- текущая задача
