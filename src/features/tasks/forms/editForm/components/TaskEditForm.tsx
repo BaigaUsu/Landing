@@ -1,108 +1,82 @@
 'use client';
 
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useState } from "react";
-import { z } from "zod";
-import { useUpdateTaskMutation } from "@/features/tasks/api/tasksApi";
 import { TaskId } from "@/features/tasks/types/taskType";
-import { taskUpdateSchema } from "@/features/tasks/services/validation/taskSchema";
-
-type TaskFormData = z.infer<typeof taskUpdateSchema>;
+import { TaskFormData } from "@/features/tasks/services/validation/taskSchema";
+import { useTaskEditForm } from "../hooks/useTaskEditForm";
 
 type Props = {
-  task: TaskId;
-  onSuccess?: () => void;
+    task: TaskId;
+    onSuccess?: () => void;
 };
 
+const formFields = [
+    { label: "Имя", name: "name" as const },
+    { label: "Фамилия", name: "surname" as const },
+    { label: "Email", name: "email" as const, type: "email" },
+    { label: "Телефон", name: "phone_number" as const, type: "tel" },
+    { label: "Действие", name: "action" as const },
+    { label: "Дата действия", name: "action_date" as const, type: "date" },
+    { label: "Время действия", name: "action_time" as const, type: "time" },
+];
+
 export function TaskEditForm({ task, onSuccess }: Props) {
-  const { register, handleSubmit, formState: { errors } } = useForm<TaskFormData>({
-    resolver: zodResolver(taskUpdateSchema),
-    defaultValues: {
-      name: task.name,
-      surname: task.surname,
-      email: task.email,
-      phone_number: task.phone_number,
-      action: task.action,
-      action_date: task.action_date,
-      action_time: task.action_time,
-      status: 'to-do',
-      project: task.project?.id || undefined,
-    },
-  });
+    const {
+        register,
+        handleSubmit,
+        errors,
+        onSubmit,
+        errorMsg,
+        success,
+    } = useTaskEditForm({ task, onSuccess });
 
-  const [updateTask] = useUpdateTaskMutation();
-  const [errorMsg, setErrorMsg] = useState<string | null>(null);
-  const [success, setSuccess] = useState(false);
+    return (
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 max-w-lg mx-auto p-6 border rounded shadow bg-white">
+            <h2 className="text-xl font-bold">Редактировать задачу #{task.id}</h2>
 
-  const onSubmit = async (data: TaskFormData) => {
-    try {
-      console.log("Отправляемые данные:", data); 
-      await updateTask({ id: task.id, data }).unwrap();
-      setSuccess(true);
-      onSuccess?.();
-    } catch (err) {
-      console.error(err);
-      setErrorMsg("Ошибка при обновлении задачи");
-    }
-  };
+            {formFields.map((field, idx) => (
+                <div key={idx} className="flex flex-col">
+                    <label className="text-sm font-medium mb-1">{field.label}</label>
+                    <input
+                        {...register(field.name as keyof TaskFormData)}
+                        type={field.type || "text"}
+                        className="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                    />
+                    {errors[field.name as keyof TaskFormData] && (
+                        <p className="text-red-600 text-sm mt-1">
+                            {errors[field.name as keyof TaskFormData]?.message as string}
+                        </p>
+                    )}
+                </div>
+            ))}
 
-  return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 max-w-lg mx-auto p-6 border rounded shadow bg-white">
-      <h2 className="text-xl font-bold">Редактировать задачу #{task.id}</h2>
+            {errors.project && (
+                <p className="text-red-600 text-sm mt-1">
+                    {errors.project.message}
+                </p>
+            )}
 
-      {[
-        { label: "Имя", name: "name" },
-        { label: "Фамилия", name: "surname" },
-        { label: "Email", name: "email", type: "email" },
-        { label: "Телефон", name: "phone_number", type: "tel" },
-        { label: "Действие", name: "action" },
-        { label: "Дата действия", name: "action_date", type: "date" },
-        { label: "Время действия", name: "action_time", type: "time" },
-      ].map((field, idx) => (
-        <div key={idx} className="flex flex-col">
-          <label className="text-sm font-medium mb-1">{field.label}</label>
-          <input
-            {...register(field.name as keyof TaskFormData)}
-            type={field.type || "text"}
-            className="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
-          />
-          {errors[field.name as keyof TaskFormData] && (
-            <p className="text-red-600 text-sm mt-1">
-              {errors[field.name as keyof TaskFormData]?.message as string}
-            </p>
-          )}
-        </div>
-      ))}
+            {/* Селектор для статуса */}
+            <div className="flex flex-col">
+                <label className="text-sm font-medium mb-1">Статус</label>
+                <select
+                    {...register("status")}
+                    className="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                >
+                    <option value="to do">to-do</option>
+                    <option value="done-positive">done-positive</option>
+                    <option value="done-negative">done-negative</option>
+                </select>
+                {errors.status && (
+                    <p className="text-red-600 text-sm mt-1">{errors.status.message}</p>
+                )}
+            </div>
 
-      {errors.project && (
-        <p className="text-red-600 text-sm mt-1">
-          {errors.project.message}
-        </p>
-      )}
+            {success && <p className="text-green-600">✅ Задача успешно обновлена</p>}
+            {errorMsg && <p className="text-red-600">{errorMsg}</p>}
 
-      {/* Селектор для статуса */}
-      <div className="flex flex-col">
-        <label className="text-sm font-medium mb-1">Статус</label>
-        <select
-          {...register("status")}
-          className="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
-        >
-          <option value="to-do" hidden>to-do</option>
-          <option value="done-positive">done-positive</option>
-          <option value="done-negative">done-negative</option>
-        </select>
-        {errors.status && (
-          <p className="text-red-600 text-sm mt-1">{errors.status.message}</p>
-        )}
-      </div>
-
-      {success && <p className="text-green-600">✅ Задача успешно обновлена</p>}
-      {errorMsg && <p className="text-red-600">{errorMsg}</p>}
-
-      <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
-        Сохранить изменения
-      </button>
-    </form>
-  );
+            <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+                Сохранить изменения
+            </button>
+        </form>
+    );
 }

@@ -26,3 +26,5 @@ export const taskUpdateSchema = z.object({
     status: z.string().min(1, "Статус обязателен"),
     project: z.number().nullable().optional(),
 });
+
+export type TaskFormData = z.infer<typeof taskUpdateSchema>;
