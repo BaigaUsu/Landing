@@ -108,7 +108,7 @@ const FileUploader: React.FC<Props> = ({ id, category }) => {
                                 className="flex items-center gap-2 border rounded px-2 py-1 bg-gray-50 text-sm"
                             >
                                 <span className="flex items-center gap-1">
-                                    {getFileIcon(f.filename)} ({f.size}b)
+                                    {(f.filename)} ({f.size}b)
                                 </span>
                                 <button
                                     onClick={() => handleDelete(f.id)}
