@@ -1,12 +1,5 @@
 "use client";
-
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useCreateProjectMutation } from "@/features/projects/api/projectApi";
-import { useState } from "react";
-import { useGetClientsQuery } from "@/share/api/usersApi";
-import { ProjectCreateFormValues, projectCreateSchema } from "../../../services/validation/projectsCreateSchema";
-
+import { useProjectCreationForm } from "../hooks/useProjectCreationForm";
 type Props = {
     taskIds?: number[];
     applicationId?: number;
@@ -15,48 +8,16 @@ type Props = {
 };
 
 export const ProjectCreateForm = ({ taskIds, applicationId, applicationLabel, onSuccess }: Props) => {
-  const [createProject] = useCreateProjectMutation();
-  const [errorMsg, setErrorMsg] = useState<string | null>(null);
-  const [success, setSuccess] = useState(false);
-
-  const defaultValues: Partial<ProjectCreateFormValues> = {
-    application: applicationId || null,
-    tasks: taskIds || [], // ← вот так
-  };
-  const { data: clientOptions, isLoading: isClientLoading } = useGetClientsQuery();
-
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    reset,
-  } = useForm<ProjectCreateFormValues>({
-    resolver: zodResolver(projectCreateSchema),
-    defaultValues
-  });
-
-  const onSubmit = async (data: ProjectCreateFormValues) => {
-    const payload = {
-      ...data,
-      client: data.client ?? null,
-      application: data.application ?? null,
-      start_date: data.start_date || null,
-      end_date: data.end_date || null,
-      tasks: data.tasks?.length ? data.tasks : [],
-
-    };
-
-    try {
-      await createProject(payload).unwrap();
-      setSuccess(true);
-      setErrorMsg(null);
-      reset();
-      onSuccess?.();
-    } catch (err) {
-      console.error("Ошибка при создании проекта:", err);
-      setErrorMsg("Произошла ошибка при создании проекта");
-    }
-  };
+    const { 
+        onSubmit, 
+        success,
+        errorMsg,
+        register,
+        handleSubmit,
+        errors,
+        isClientLoading,
+        clientOptions,
+    } = useProjectCreationForm({ taskIds, applicationId, onSuccess });
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 max-w-xl mx-auto p-6 border rounded shadow bg-white">
@@ -133,23 +94,6 @@ export const ProjectCreateForm = ({ taskIds, applicationId, applicationLabel, on
           })}
           className="border border-gray-300 rounded px-3 py-2"
         />
-      </div>
-
-      {/* Статус */}
-      <div className="flex flex-col">
-        <label className="text-sm font-medium mb-1">Статус</label>
-        <select
-          {...register("status")}
-          defaultValue="in progress"
-          className="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
-        >
-          <option value="in progress">in progress</option>
-          <option value="completed">completed</option>
-          <option value="not-completed">not-completed</option>
-        </select>
-        {errors.status && (
-          <p className="text-red-600 text-sm mt-1">{errors.status.message}</p>
-        )}
       </div>
 
       {/* Заявка */}

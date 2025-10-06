@@ -2,19 +2,18 @@ import { z } from "zod";
 
 export const projectCreateSchema = z.object({
     project_name: z.string().min(1, "Название проекта обязательно"),
-    client: z.number().nullable().optional(),
-    description: z.string().optional(),
-    start_date: z.string().nullable().optional(),
-    end_date: z.string().nullable().optional(),
-    cost: z.union([z.number(), z.null()]).optional(),
-    status: z.string().nullable().optional(),
+    client: z.number({ required_error: "Клиент обязателен" }),
+    description: z.string().min(1, "Описание обязательно"),
+    start_date: z.string().min(1, "Дата начала обязательна"),
+    end_date: z.string().min(1, "Дата окончания обязательна"),
+    cost: z.number({ required_error: "Стоимость обязательна" }),
     application: z.union([z.number(), z.null()]).optional(),
     tasks: z.array(z.any()).optional(),
-  });
+});
 
-  export type ProjectCreateFormValues = z.infer<typeof projectCreateSchema>;
+export type ProjectCreateFormValues = z.infer<typeof projectCreateSchema>;
 
-  export const projectUpdateSchema = z.object({
+export const projectUpdateSchema = z.object({
     project_name: z.string().min(1, "Название обязательно"),
     client: z.number().nullable().optional(),
     description: z.string().optional(),
@@ -24,6 +23,6 @@ export const projectCreateSchema = z.object({
     status: z.string().optional(),
     comment: z.string().optional(),
     tasks: z.array(z.any()).optional(),
-  });
+});
 
 export type ProjectUpdateFormValues = z.infer<typeof projectUpdateSchema>;

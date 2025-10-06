@@ -35,16 +35,15 @@ export interface ProjectList {
     application: ApplicationShort | null;
     tasks: TaskShort[];
     stages: StageList[];
-  }
+}
 
 export interface ProjectPostRequest {
     project_name: string;
-    client: number | null;
-    description?: string;
-    start_date?: string | null;
-    end_date?: string | null;
-    cost?: number | null;
-    status?: string | null;
+    client: number;
+    description: string;
+    start_date: string;
+    end_date: string;
+    cost: number;
     application?: number | null;
     tasks?: TaskShort[];
 };
