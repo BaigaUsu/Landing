@@ -1,8 +1,8 @@
 import { NextRequest } from "next/server";
 
-export async function DELETE( req: NextRequest, { params }: { params: { id: string; kind: string; stageId: string; subStageId: string } }) {
+export async function DELETE( req: NextRequest, { params }: { params: Promise<{ id: string; kind: string; stageId: string; subStageId: string }> }) {
     try {
-      const { id, kind, stageId, subStageId } = params;
+      const { id, kind, stageId, subStageId } = await params;
   
       const res = await fetch(
         `${process.env.API_URL}/projects/${id}/stages/${kind}/${stageId}/substages/${subStageId}/`,

@@ -3,7 +3,7 @@ import ApplicationDetailPage from "@/features/applications/components/Applicatio
 export default function Page({ params }: any) {
   return (
     <div className="p-8">
-      <ApplicationDetailPage selectedId={+params.id} />
+      <ApplicationDetailPage id={+params.id} />
     </div>
   );
 }

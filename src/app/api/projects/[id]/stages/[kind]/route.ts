@@ -2,10 +2,10 @@ import { NextRequest } from "next/server";
 
 export async function POST(
     req: NextRequest,
-    { params }: { params: { id: string; kind: string } }
+    { params }: { params: Promise<{ id: string; kind: string }> }
   ) {
     try {
-      const { id, kind } = params;
+      const { id, kind } = await params;
       const body = await req.json();
   
       const res = await fetch(`${process.env.API_URL}/projects/${id}/stages/${kind}/`, {

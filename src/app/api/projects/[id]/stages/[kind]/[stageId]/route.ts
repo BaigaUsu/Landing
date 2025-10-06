@@ -1,8 +1,11 @@
 import { NextRequest } from "next/server";
 
-export async function GET(req: NextRequest, { params }: { params: { id: string; kind: string; stageId: string } }) {
+export async function GET(
+    req: NextRequest, 
+    { params }: { params: Promise<{ id: string, kind: string, stageId: string }> }
+) {
   try {
-    const { id, kind, stageId } = params;
+    const { id, kind, stageId } = await params;
 
     const res = await fetch(`${process.env.API_URL}/projects/${id}/stages/${kind}/${stageId}/`);
     if (!res.ok) {
@@ -19,9 +22,12 @@ export async function GET(req: NextRequest, { params }: { params: { id: string; 
   }
 }
 
-export async function PUT( req: NextRequest, { params }: { params: { id: string; kind: string; stageId: string } }) {
+export async function PUT( 
+    req: NextRequest, 
+    { params }: { params: Promise<{ id: string, kind: string, stageId: string }> }
+) {
     try {
-      const { id, kind, stageId } = params;
+      const { id, kind, stageId } = await params;
       const body = await req.json();
   
       const res = await fetch(`${process.env.API_URL}/projects/${id}/stages/${kind}/${stageId}/`,
@@ -50,9 +56,12 @@ export async function PUT( req: NextRequest, { params }: { params: { id: string;
     }
   }
 
-  export async function DELETE( req: NextRequest, { params }: { params: { id: string; kind: string; stageId: string } }) {
+  export async function DELETE( 
+    req: NextRequest, 
+    { params }: { params: Promise<{ id: string; kind: string; stageId: string }> }
+) {
     try {
-      const { id, kind, stageId } = params;
+      const { id, kind, stageId } = await params;
   
       const res = await fetch(
         `${process.env.API_URL}/projects/${id}/stages/${kind}/${stageId}/`,

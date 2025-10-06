@@ -2,10 +2,10 @@ import { NextRequest } from "next/server";
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { id: string; kind: string; stageId: string; category: string } }
+  { params }: { params: Promise<{ id: string, kind: string, stageId: string, category: string }> }
 ) {
   try {
-    const { id, kind, stageId, category } = params;
+    const { id, kind, stageId, category } = await params;
 
     const res = await fetch(`${process.env.API_URL}/projects/${id}/stages/${kind}/${stageId}/files/${category}/`);
     
@@ -25,10 +25,10 @@ export async function GET(
 
 export async function POST(
     req: NextRequest,
-    { params }: { params: { id: string; kind: string; stageId: string; category: string } }
+    { params }: { params: Promise<{ id: string, kind: string, stageId: string, category: string }> }
   ) {
     try {
-      const { id, kind, stageId, category } = params;
+      const { id, kind, stageId, category } = await params;
 
       const formData = await req.formData();
   
