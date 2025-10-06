@@ -1,0 +1,33 @@
+name: CD
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build Dockerfile
+        run: docker build -t ${{ secrets.DOCKER_HUB_USER }}/crm-frontend:latest .
+
+      - name: Login Docker Hub
+        run: echo "${{ secrets.DOCKER_HUB_PASSWORD }}" | docker login -u ${{ secrets.DOCKER_HUB_USER }} --password-stdin
+
+      - name: Push Docker Image
+        run: docker push ${{ secrets.DOCKER_HUB_USER }}/crm-frontend:latest
+
+      - name: Connect to server via SSH
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            cd /opt/mb/test/crm-front
+            docker pull ${{ secrets.DOCKER_HUB_USER }}/crm-frontend:latest
+            docker compose up -d
+            docker image prune -f
