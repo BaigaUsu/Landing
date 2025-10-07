@@ -5,9 +5,10 @@ type Props = {
     applicationId?: number;
     applicationLabel?: string;
     onSuccess?: () => void;
+    clientEmail?: string;
 };
 
-export const ProjectCreateForm = ({ taskIds, applicationId, applicationLabel, onSuccess }: Props) => {
+export const ProjectCreateForm = ({ taskIds, applicationId, applicationLabel, onSuccess, clientEmail }: Props) => {
     const { 
         onSubmit, 
         success,
@@ -17,7 +18,8 @@ export const ProjectCreateForm = ({ taskIds, applicationId, applicationLabel, on
         errors,
         isClientLoading,
         clientOptions,
-    } = useProjectCreationForm({ taskIds, applicationId, onSuccess });
+        selectedClientId
+    } = useProjectCreationForm({ taskIds, applicationId, onSuccess, clientEmail});
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 max-w-xl mx-auto p-6 border rounded shadow bg-white">
@@ -40,12 +42,19 @@ export const ProjectCreateForm = ({ taskIds, applicationId, applicationLabel, on
           <p className="italic text-gray-500">Загрузка клиентов...</p>
         ) : (
           <select
+            // Используем defaultValue, если email клиента известен
+            // ключ key={selectedClientId} заставит React пересоздать элемент с правильным defaultValue
+            key={selectedClientId}
+            defaultValue={selectedClientId} 
             {...register("client", {
               setValueAs: (v) => (v === "" ? null : Number(v)),
             })}
             className="border border-gray-300 rounded px-3 py-2"
+            disabled={!!clientEmail} 
           >
-            <option value="" hidden>Не выбрано</option>
+            {/* Показываем пустую опцию, только если клиент не выбран по умолчанию */}
+            {!clientEmail && <option value="" hidden>Не выбрано</option>}
+            
             {clientOptions?.map((client) => (
               <option key={client.id} value={client.id}>
                 {client.email}
@@ -54,6 +63,7 @@ export const ProjectCreateForm = ({ taskIds, applicationId, applicationLabel, on
           </select>
         )}
       </div>
+      
 
       {/* Описание */}
       <div className="flex flex-col">

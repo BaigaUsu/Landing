@@ -86,6 +86,7 @@ export function TaskDetailPage({ taskId, onCloseEdit, onDelete }: Props) {
                     <ProjectCreateForm
                         taskIds={[task.id, ...(task.previous_tasks?.map(t => t.id) || [])]}
                         applicationId={task.application?.id}
+                        clientEmail={task.email}
                         onSuccess={showDetailView}
                     />
                 </>

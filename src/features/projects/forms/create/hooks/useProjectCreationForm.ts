@@ -9,13 +9,15 @@ type Props = {
     taskIds?: number[];
     applicationId?: number;
     onSuccess?: () => void;
+    clientEmail?: string;
 }
 
-export function useProjectCreationForm({ taskIds, applicationId, onSuccess }: Props) {
+export function useProjectCreationForm({ taskIds, applicationId, onSuccess, clientEmail }: Props) {
     const [createProject] = useCreateProjectMutation();
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
   const { data: clientOptions, isLoading: isClientLoading } = useGetClientsQuery();
+  const selectedClientId = clientOptions?.find(c => c.email === clientEmail)?.id;
 
   const {
     register,
@@ -26,11 +28,11 @@ export function useProjectCreationForm({ taskIds, applicationId, onSuccess }: Pr
     resolver: zodResolver(projectCreateSchema),
     defaultValues: {
         project_name: "",
-        client: 0,
+        client: undefined,
         description: "",
         start_date: "",
         end_date: "",
-        cost: 0,
+        cost: undefined,
         application: applicationId || null,
         tasks: taskIds || [], // ← вот так
     }
@@ -61,5 +63,6 @@ export function useProjectCreationForm({ taskIds, applicationId, onSuccess }: Pr
         errors,
         isClientLoading,
         clientOptions,
+        selectedClientId
     };
 }
