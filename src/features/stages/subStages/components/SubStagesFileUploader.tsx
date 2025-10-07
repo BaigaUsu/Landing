@@ -117,12 +117,32 @@ export const SubStagesFileUploader = ({ id, kind, stageId, subStageId, category 
                                 key={f.id}
                                 className="flex items-center gap-2 border rounded px-2 py-1 bg-gray-50 text-sm"
                             >
-                                <span className="flex items-center gap-1">
-                                    {getFileIcon(f.filename)} ({f.size}b)
+                                <span 
+                                    onClick={() =>
+                                        window.open(
+                                          `http://95.179.247.253:9000/api/v1/files/get/${f.id}/`,
+                                          "_blank"
+                                        )
+                                      }
+                                    className="flex items-center gap-1 cursor-pointer">
+                                    {(f.filename)} ({f.size}b)
                                 </span>
                                 <button
+                                    onClick={() => {
+                                        const link = document.createElement("a");
+                                        link.href = `http://95.179.247.253:9000/api/v1/files/download/${f.id}/`; // ссылка на скачивание
+                                        link.download = f.filename; // имя файла при скачивании
+                                        document.body.appendChild(link);
+                                        link.click();
+                                        document.body.removeChild(link);
+                                    }}
+                                    className="text-blue-600 hover:text-blue-800 px-1 rounded cursor-pointer"
+                                    >
+                                    ⬇
+                                </button>
+                                <button
                                     onClick={() => handleDelete(f.id)}
-                                    className="text-red-600 hover:text-red-800 px-1 rounded"
+                                    className="text-red-600 hover:text-red-800 px-1 rounded cursor-pointer"
                                 >
                                     ❌
                                 </button>

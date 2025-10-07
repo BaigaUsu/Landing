@@ -1,12 +1,8 @@
 'use client';
 
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useState } from "react";
-import { useUpdateProjectMutation } from "@/features/projects/api/projectApi";
-import { useGetClientsQuery } from "@/share/api/usersApi";
 import { ProjectId } from "../../../types/projectTypes";
 import { ProjectUpdateFormValues, projectUpdateSchema } from "@/features/projects/services/validation/projectsCreateSchema";
+import { useProjectEditForm } from "../hooks/useProjectEditForm";
 
 type Props = {
     taskIds?: number[];
@@ -15,36 +11,7 @@ type Props = {
 };
 
 export function ProjectEditForm({ taskIds, project, onSuccess }: Props) {
-    const { register, handleSubmit, formState: { errors } } = useForm<ProjectUpdateFormValues>({
-        resolver: zodResolver(projectUpdateSchema),
-        defaultValues: {
-        project_name: project.project_name,
-        description: project.description || "",
-        start_date: project.start_date || "",
-        end_date: project.end_date || "",
-        cost: Number(project.cost) || undefined,
-        status: project.status || "",
-        comment: project.comment || "",
-        tasks: project.tasks?.length ? project.tasks.map(t => t.id) : [],
-        },
-    });
-
-    const [updateProject] = useUpdateProjectMutation();
-    const [errorMsg, setErrorMsg] = useState<string | null>(null);
-    const [success, setSuccess] = useState(false);
-    const { data: clients, isLoading: isClientsLoading } = useGetClientsQuery();
-
-    const onSubmit = async (data: ProjectUpdateFormValues) => {
-        try {
-        await updateProject({ id: project.id, data }).unwrap();
-        setSuccess(true);
-        setErrorMsg(null);
-        onSuccess?.();
-        } catch (err) {
-        console.error(err);
-        setErrorMsg("Ошибка при обновлении проекта");
-        }
-    };
+    const { register, handleSubmit, errors, isClientsLoading, clients, onSubmit, errorMsg, success } = useProjectEditForm({ project, onSuccess });
 
     return (
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 max-w-lg mx-auto p-6 border rounded shadow bg-white">
