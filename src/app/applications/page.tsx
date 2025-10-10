@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useGetApplicationsQuery } from "@/features/applications/api/appApi";
 import ApplicationDetailPage from "@/features/applications/components/ApplicationDetailPage";
+import { SearchBar } from "@/share/components/SearchBar";
 
 const FILTER_OPTIONS = [
     { value: 'actual', label: 'Актуальные' },
@@ -20,10 +21,18 @@ export default function ApplicationMasterDetailPage() {
     const { data: applications, isLoading, error } = useGetApplicationsQuery(statusFilter);
     console.log(applications);
     const [selectedId, setSelectedId] = useState<number | null>(null);
+    const [searchResults, setSearchResults] = useState<any[]>([]); // 👈 сюда прилетят результаты поиска
+
 
     useEffect(() => {
         setSelectedId(null);
+        setSearchResults([]);
     }, [statusFilter]);
+
+    const listToRender =
+        searchResults.length > 0
+        ? searchResults
+        : applications?.results ?? [];
 
     if (isLoading) return <p className="p-4">Загрузка заявок...</p>;
     if (error) return <p className="p-4 text-red-600">Ошибка загрузки заявок</p>;
@@ -33,6 +42,14 @@ export default function ApplicationMasterDetailPage() {
             {/* Список заявок */}
             <div className="w-1/3 border-r overflow-y-auto p-4">
                 <h2 className="text-lg font-semibold mb-4">Заявки</h2>
+
+                <div className="mb-3">
+                    <SearchBar
+                        type="applications"
+                        placeholder="Найди заявку..."
+                        onResults={(results) => setSearchResults(results)}
+                    />
+                </div>
 
                 {/* Селект фильтра — по умолчанию "actual" */}
                 <div className="mb-4">
@@ -52,21 +69,23 @@ export default function ApplicationMasterDetailPage() {
                     </select>
                 </div>
 
-                {applications?.results?.length ? (
-                    applications.results.map((item) => (
+                {listToRender.length ? (
+                    listToRender.map((applications) => (
                         <div
-                            key={item.id}
+                            key={applications.id}
                             className={`p-3 mb-2 border rounded cursor-pointer hover:bg-gray-100 ${
-                                selectedId === item.id ? "bg-blue-100" : ""
+                                selectedId === applications.id ? "bg-blue-100" : ""
                             }`}
-                            onClick={() => setSelectedId(item.id)}
+                            onClick={() => {
+                                setSelectedId(applications.id);
+                            }}
                         >
-                            <p><strong>{item.name} {item.surname}</strong></p>
-                            <p className="text-sm text-gray-600">{item.status}</p>
+                            <p><strong>{applications.name} {applications.surname}</strong></p>
+                            <p className="text-sm text-gray-600">{applications.status}</p>
                         </div>
                     ))
-                    ) : (
-                    <p>Нет заявок</p>
+                ) : (
+                    <p className="text-gray-500">Нет проектов</p>
                 )}
             </div>
 

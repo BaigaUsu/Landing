@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useGetTasksQuery } from "@/features/tasks/api/tasksApi";
 import { TaskCreateForm } from "@/features/tasks/forms/createForm/components/TaskCreationForm";
 import { TaskDetailPage } from "@/features/tasks/components/TaskDetailPage";
+import { SearchBar } from "@/share/components/SearchBar";
 
 const FILTER_OPTIONS = [
     { value: 'actual', label: 'Актуальные' },
@@ -20,16 +21,23 @@ export default function TasksMasterDetailPage() {
     const { data: tasks, isLoading, error } = useGetTasksQuery(statusFilter);
     const [selectedId, setSelectedId] = useState<number | null>(null);
     const [showCreateForm, setShowCreateForm] = useState(false);  
+    const [searchResults, setSearchResults] = useState<any[]>([]);
   
     useEffect(() => {
         setSelectedId(null);
         setShowCreateForm(false);
+        setSearchResults([]);
     }, [statusFilter]);
 
     const handleCreateClick = () => {
         setSelectedId(null); // сбрасываем выбранную задачу
         setShowCreateForm(true); // показываем форму
     };
+
+    const listToRender =
+    searchResults.length > 0
+      ? searchResults
+      : tasks?.results ?? [];
 
     if (isLoading) return <p className="p-4">Загрузка задач...</p>;
     if (error) return <p className="p-4 text-red-600">Ошибка загрузки задач</p>;
@@ -50,6 +58,14 @@ export default function TasksMasterDetailPage() {
                     </button>
                 </div>
 
+                <div className="mb-3">
+                    <SearchBar
+                    type="tasks"
+                    placeholder="Найди задачу..."
+                    onResults={(results) => setSearchResults(results)}
+                    />
+                </div>
+
                 
                 {/* Селект фильтра — по умолчанию "actual" */}
                 <div className="mb-4">
@@ -68,8 +84,8 @@ export default function TasksMasterDetailPage() {
                     </select>
                 </div>
 
-                {tasks?.results?.length ? (
-                    tasks.results.map((task) => (
+                {listToRender.length ? (
+                    listToRender.map((task) => (
                         <div
                             key={task.id}
                             className={`p-3 mb-2 border rounded cursor-pointer hover:bg-gray-100 ${
@@ -85,9 +101,11 @@ export default function TasksMasterDetailPage() {
                         </div>
                     ))
                 ) : (
-                    <p>Нет задач</p>
+                    <p className="text-gray-500">Нет проектов</p>
                 )}
             </div>
+
+           
 
             {/* Detail */}
             <div className="w-2/3 p-8 overflow-y-auto">
