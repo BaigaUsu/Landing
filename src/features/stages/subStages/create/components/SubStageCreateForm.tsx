@@ -1,11 +1,7 @@
-// /features/stages/forms/create/components/SubStageCreateForm.tsx (пример пути)
 "use client";
 
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { ServerStageUrlKind } from "@/features/stages/types/types";
-import { useCreateSubStagesMutation } from "../api/subStagesApi";
-import { SubStageFormData, subStageSchema } from "../../service/validation/subStagesSchema";
+import { useSubStageCreateForm } from "../hooks/useSubStageCreateForm";
 
 type Props = {
     projectId: number;
@@ -15,33 +11,7 @@ type Props = {
 };
 
 export const SubStageCreateForm = ({ projectId, stageId, stageKind, onSuccess }: Props) => {
-    const [createSubStage, { isLoading }] = useCreateSubStagesMutation();
-    
-    const { register, handleSubmit, formState: { errors } } = useForm<SubStageFormData>({
-        resolver: zodResolver(subStageSchema),
-    });
-
-    const onSubmit = async (data: SubStageFormData) => {
-        try {
-            await createSubStage({
-                id: projectId,
-                kind: stageKind,
-                stageId: stageId,
-                body: {
-                    ...data,
-                    // Убедимся, что пустые строки отправляются как null
-                    start_date: data.start_date || null,
-                    end_date: data.end_date || null,
-                }
-            }).unwrap();
-            
-            alert("Подэтап успешно создан!");
-            onSuccess();
-        } catch (err) {
-            console.error("Ошибка при создании подэтапа:", err);
-            alert("Произошла ошибка");
-        }
-    };
+    const { register, handleSubmit, errors, onSubmit, isLoading } = useSubStageCreateForm({ projectId, stageId, stageKind, onSuccess });
 
     return (
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 p-4 border rounded-md bg-gray-50 mt-4">

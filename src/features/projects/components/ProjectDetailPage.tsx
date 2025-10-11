@@ -9,9 +9,9 @@ import { StageEditForm } from "../../stages/edit/components/StageEditForm";
 import { ServerStageType, ServerStageUrlKind } from "@/features/stages/types/types";
 import { useDeleteStageMutation } from "@/features/stages/api/specificStages";
 import { StageDetailItem } from "@/features/stages/components/StageDetailItem";
-import { SubStageCreateForm } from "@/features/stages/subStages/create/SubStageCreateForm";
 import { convertStageTypeToServerKind } from "@/features/stages/service/convertStageTypeToServerKind";
 import FileUploader from "./FileUploader";
+import { SubStageCreateForm } from "@/features/stages/subStages/create/components/SubStageCreateForm";
 
 type Props = {
   id: number;
