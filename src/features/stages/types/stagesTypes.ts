@@ -1,5 +1,5 @@
 import { Staff } from "../../../share/types/staffTypes";
-import { SubStage, SubStageList } from "../subStages/types/subStagesTypes";
+import { SubStageList } from "../subStages/types/subStagesTypes";
 
 export interface Stage<T> {
     count: number;
@@ -24,25 +24,25 @@ export interface StageList {
 }
 
 export interface StageId {
-        id: number;
-        kind: string;
-        task: string;
-        specialization: string;
-        worker: Staff;
-        start_date: string;
-        end_date: string;
-        piece_rate_pay: string;
-        status: string;
-        comment: string;
-        created_at: string;
-        updated_at: string;
-        substages: SubStageList[];
+    id: number;
+    kind: string;
+    task: string;
+    specialization: string;
+    worker: Staff;
+    start_date: string;
+    end_date: string;
+    piece_rate_pay: string;
+    status: string;
+    comment: string;
+    created_at: string;
+    updated_at: string;
+    substages: SubStageList[];
 }
 
 export interface StageCreateRequest {
     task: string;
     specialization: string;
-    worker?: number | null;
+    worker: number;
     start_date: string;
     end_date: string;
     piece_rate_pay: string;
