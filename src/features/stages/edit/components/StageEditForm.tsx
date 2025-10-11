@@ -4,6 +4,7 @@ import { useStageForm } from "../hooks/useStageForm";
 import { StageWithType } from "../../types/types";
 import { getAvailableSpecializationNames } from "../hooks/useSpecializationsByStage";
 import { useMemo } from "react";
+
 type Props = {
     stage: StageWithType;
     onSuccess?: () => void;
@@ -11,30 +12,31 @@ type Props = {
 
 export function StageEditForm({ stage, onSuccess }: Props) {
     const {
-        formMethods,
+        register,
+        handleSubmit,
+        formState: { errors },
         onSubmit,
         fullStage,
-        specializations,
         isStageLoading,
         isLoadingSpec,
         errorMsg,
         success,
         isSubmitting,
-        stageType: mappedStageType
+        stageType: mappedStageType,
+        watch,
+        specializations,
     } = useStageForm({stage, onSuccess});
-    
-    const { register, handleSubmit, watch, formState: { errors } } = formMethods;
 
     // Отслеживаем выбранную специализацию
     const selectedSpecialization = watch("specialization");
-        
+            
     // Фильтруем работников по выбранной специализации
     const filteredWorkers = useMemo(() => {
         return selectedSpecialization
             ? specializations.filter(spec => spec.type === selectedSpecialization)
             : [];
     }, [selectedSpecialization, specializations]);
-      
+
     // Получение доступных специализаций
     const availableSpecializations = getAvailableSpecializationNames(mappedStageType);
     
@@ -133,18 +135,19 @@ export function StageEditForm({ stage, onSuccess }: Props) {
                 type="submit" 
                 disabled={isSubmitting}
                 className={`px-6 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 ${
-                isSubmitting
-                    ? 'bg-gray-400 cursor-not-allowed'
-                    : 'bg-blue-600 hover:bg-blue-700'
-                }`}
+                    isSubmitting
+                        ? 'bg-gray-400 cursor-not-allowed'
+                        : 'bg-blue-600 hover:bg-blue-700'
+                    }`
+                }
             >
                 {isSubmitting ? (
-                <div className="flex items-center">
-                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                    Сохранение...
-                </div>
+                    <div className="flex items-center">
+                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                        Сохранение...
+                    </div>
                 ) : (
-                'Сохранить изменения'
+                    'Сохранить изменения'
                 )}
             </button>
         </form>

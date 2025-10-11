@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { 
@@ -36,18 +36,21 @@ export function useStageForm({stage, onSuccess}: Props) {
         stageId: stage.id,
     });    
     const { specializations, isLoading: isLoadingSpec } = useSpecializationsByStage(stageType);
+
+    
     
     
     const formMethods = useForm<StageUpdateFormValues>({
         resolver: zodResolver(stageUpdateSchema),
         mode: "onChange"
     });
+    const { register, handleSubmit, watch, reset, formState } = formMethods;
 
     const { updateStage, isLoading } = useStageUpdateMutation();
 
     useEffect(() => {
         if (fullStage) {
-            formMethods.reset({
+            reset({
                 task: fullStage.task,
                 specialization: fullStage.specialization || "",
                 worker: fullStage.worker?.id || null,
@@ -59,7 +62,7 @@ export function useStageForm({stage, onSuccess}: Props) {
             });
             setSuccess(false); // Сброс статуса при новой загрузке
         }
-    }, [fullStage, formMethods]);
+    }, [fullStage, reset]);
 
     const onSubmit = async (data: StageUpdateFormValues) => {
         setIsSubmitting(true);
@@ -94,15 +97,18 @@ export function useStageForm({stage, onSuccess}: Props) {
     };
 
     return {
-        formMethods,
+        register,
+        handleSubmit,
+        formState,
         onSubmit,
         fullStage,
-        specializations,
         isStageLoading,
         isLoadingSpec,
         errorMsg,
         success,
         isSubmitting,
-        stageType
+        stageType,
+        watch,
+        specializations,
     };
 }
