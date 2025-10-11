@@ -26,21 +26,21 @@ export const filesApi = rootApi.injectEndpoints({
                     body: formData,
                 };
             },
-            invalidatesTags: ['Projects'], // Можно конкретизировать тег категории, если хочешь
+            invalidatesTags: ['Files'], // Можно конкретизировать тег категории, если хочешь
         }),
         deleteFile: builder.mutation<void, { id: string; category: string; fileId: string }>({
             query: ({ id, category, fileId }) => ({
                 url: `projects/${id}/files/${category}/${fileId}/`,
                 method: 'DELETE',
             }),
-            invalidatesTags: ['Projects'],
+            invalidatesTags: ['Files'],
         }),
             getFiles: builder.query<FileUploadResponse<FileData>, { id: string; category: string }>({
             query: ({ id, category }) => `projects/${id}/files/${category}/`,
-            providesTags: ['Projects'],
+            providesTags: ['Files'],
         }),
     }),
-    overrideExisting: false,
+    overrideExisting: true,
 });
 
 export const {

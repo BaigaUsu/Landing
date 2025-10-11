@@ -16,21 +16,21 @@ export const filesApi = rootApi.injectEndpoints({
           body: formData,
         };
       },
-      invalidatesTags: ['Stages'], 
+      invalidatesTags: ['Files'], 
     }),
     deleteStageFile: builder.mutation<void, { id: number; kind: ServerStageUrlKind; stageId: number; category: string; fileId: string }>({
       query: ({ id, kind, stageId, category, fileId }) => ({
         url: `projects/${id}/stages/${kind}/${stageId}/files/${category}/${fileId}/`,
         method: 'DELETE',
       }),
-      invalidatesTags: ['Stages'],
+      invalidatesTags: ['Files'],
     }),
     getStageFiles: builder.query<FileUploadResponse<FileData>, { id: number; kind: ServerStageUrlKind; stageId: number; category: string }>({
       query: ({ id, kind, stageId, category }) => `projects/${id}/stages/${kind}/${stageId}/files/${category}/`,
-      providesTags: ['Stages'],
+      providesTags: ['Files'],
     }),
   }),
-  overrideExisting: false,
+  overrideExisting: true,
 });
 
 export const {

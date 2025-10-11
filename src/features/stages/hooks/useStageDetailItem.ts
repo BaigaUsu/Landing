@@ -9,7 +9,7 @@ type StageDetailItemProps = {
 };
 
 export function useStageDetailItem({projectId, stage}: StageDetailItemProps) {
-    const stageKind = convertStageTypeToServerKind(stage.kind as ServerStageType);
+    const stageKind: ServerStageUrlKind = convertStageTypeToServerKind(stage.kind as ServerStageType);
     
     const { data: detailedStage, isLoading, isError } = useGetStagesByIdQuery({
         id: projectId,

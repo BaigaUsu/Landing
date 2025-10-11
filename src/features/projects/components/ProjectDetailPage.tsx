@@ -1,17 +1,16 @@
 "use client";
 
 import { useState } from "react";
-import { useGetProjectByIdQuery, useDeleteProjectMutation } from "@/features/projects/api/projectApi";
 import { ProjectEditForm } from "@/features/projects/forms/edit/components/ProjectEditForm";
 import Link from "next/link";
 import { StageCreateForm } from "../../stages/create/components/StageCreationForm";
 import { StageEditForm } from "../../stages/edit/components/StageEditForm";
 import { ServerStageType, ServerStageUrlKind } from "@/features/stages/types/types";
-import { useDeleteStageMutation } from "@/features/stages/api/specificStages";
 import { StageDetailItem } from "@/features/stages/components/StageDetailItem";
 import { convertStageTypeToServerKind } from "@/features/stages/service/convertStageTypeToServerKind";
 import FileUploader from "./FileUploader";
 import { SubStageCreateForm } from "@/features/stages/subStages/create/components/SubStageCreateForm";
+import { useProjectDetailPage } from "../hooks/useProjectDetailPage";
 
 type Props = {
   id: number;
@@ -19,9 +18,7 @@ type Props = {
 };
 
 export const ProjectDetailPage = ({ id, onDelete }: Props) => {
-    const { data: project, isLoading } = useGetProjectByIdQuery(id, { skip: !id });
-    const [deleteProject, { isLoading: isDeleting }] = useDeleteProjectMutation();
-    const [deleteStages] = useDeleteStageMutation();
+    const { project, isLoading, isDeleting, handleStageDelete, handleDelete } = useProjectDetailPage({ id, onDelete });
 
     const [editingStageId, setEditingStageId] = useState<number | null>(null);
     const [editingStageType, setEditingStageType] = useState<ServerStageType | null>(null);
@@ -39,28 +36,7 @@ export const ProjectDetailPage = ({ id, onDelete }: Props) => {
     if (isLoading) return <p>Загрузка данных проекта...</p>;
     if (!project) return <p className="text-gray-500 italic">Проект не найден</p>;
 
-    const handleStageDelete = async (stageId: number, kind: ServerStageUrlKind, projectId: number) => {
-        try {
-            await deleteStages({ id: projectId, kind, stageId }).unwrap();
-            alert("Этап успешно удалён");
-        } catch (err) {
-            console.error(err);
-            alert("Ошибка при удалении этапа");
-        }
-    };
-
-    const handleDelete = async () => {
-        if (confirm("Вы уверены, что хотите удалить проект?")) {
-        try {
-            await deleteProject(project.id).unwrap();
-            alert("Проект удалён");
-            onDelete?.();
-        } catch (err) {
-            console.error(err);
-            alert("Ошибка при удалении проекта");
-        }
-        }
-    };
+    
 
     return (
         <div>
@@ -91,7 +67,6 @@ export const ProjectDetailPage = ({ id, onDelete }: Props) => {
                     ))}
                 </div>
                 
-
                 <div className="mb-6 space-y-2">
                     <p><strong>Клиент:</strong> {project.client} </p>
                     <p><strong>Описание:</strong> {project.description}</p>
