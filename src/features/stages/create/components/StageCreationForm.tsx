@@ -1,5 +1,6 @@
 "use client";
 
+import { useMemo } from "react";
 import { ServerStageType } from "../../types/types";
 import { useStageCreationForm } from "../hooks/useStateCreationForm";
 
@@ -19,8 +20,20 @@ export const StageCreateForm = ({ projectId, onSuccess, stageType }: Props, ) =>
         submitError,
         submitSuccess,
         availableSpecializations,
-        specializations
+        specializations,
+        watch,
+        isSubmitting,
     } = useStageCreationForm({stageType, projectId, onSuccess});
+
+    // Отслеживаем выбранную специализацию
+        const selectedSpecialization = watch("specialization");
+                
+        // Фильтруем работников по выбранной специализации
+        const filteredWorkers = useMemo(() => {
+            return selectedSpecialization
+                ? specializations.filter(spec => spec.type === selectedSpecialization)
+                : [];
+        }, [selectedSpecialization, specializations]);
 
     const getStageDisplayName = (type: ServerStageType): string => {
         const displayNames: Record<ServerStageType, string> = {
@@ -66,7 +79,7 @@ export const StageCreateForm = ({ projectId, onSuccess, stageType }: Props, ) =>
                         <label className="block text-sm mb-1">Работник</label>
                         <select {...register("worker", { setValueAs: v => (v === "" ? null : Number(v)) })}>
                             <option value="">Выберите</option>
-                            {specializations.map((spec) => (
+                            {filteredWorkers.map((spec) => (
                                 <option key={`${stageType}-${spec.id}`} value={spec.id}>
                                     {spec.label}
                                 </option>

@@ -20,7 +20,6 @@ export const specificStagesApi = rootApi.injectEndpoints({
                 url: `/projects/${id}/stages/${kind}/${stageId}/`,
                 method: 'GET',
             }),
-            providesTags: ['Stages'],
         }),
 
         // === CREATE by type ===

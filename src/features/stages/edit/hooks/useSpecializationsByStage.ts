@@ -78,15 +78,15 @@ export function useSpecializationsByStage(stageType: ServerStageType) {
             result.push({ ...spec, type: specType });
             }
         }
-
-        // Используем композитный ключ "id-type" для уникальности
-        const unique = new Map<string, SpecializationWithType>();
-        for (const item of result) {
-            const key = `${item.id}-${item.type}`; // The new composite key
-            if (!unique.has(key)) {
-                unique.set(key, item);
-            }
-        }
+  
+      // Убираем дубликаты, сохраняя первый встретившийся (если нужно сохранить последний — убери проверку)
+      const unique = new Map<string, SpecializationWithType>();
+      for (const item of result) {
+          const key = `${item.id}-${item.type}`; // The new composite key
+          if (!unique.has(key)) {
+              unique.set(key, item);
+          }
+      }
   
         return Array.from(unique.values());
     }, [    
@@ -102,9 +102,9 @@ export function useSpecializationsByStage(stageType: ServerStageType) {
 }
 
 export function getAvailableSpecializationNames(
-    stageType: ServerStageType
+  stageType: ServerStageType
 ): SpecializationKey[] {
-    return STAGE_SPECIALIZATIONS_CONFIG[stageType] || [];
+  return STAGE_SPECIALIZATIONS_CONFIG[stageType] || [];
 }
 
 

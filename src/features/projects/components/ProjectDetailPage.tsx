@@ -165,8 +165,8 @@ export const ProjectDetailPage = ({ id, onDelete }: Props) => {
                                             setEditingStageId(stage.id);
                                             setEditingStageType(stage.kind as ServerStageType);
                                         }}
-                                        onDelete={() =>
-                                            handleStageDelete(stage.id, stage.kind as ServerStageUrlKind, project.id)
+                                        onDelete={(stageId, kind, projectId) => 
+                                            handleStageDelete(stageId, kind, projectId)
                                         }
                                         />
 
