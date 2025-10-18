@@ -12,8 +12,14 @@ export async function GET(request: Request) {
 		});
 		
 		console.log('Backend URL:', backendUrl.toString());
+        const token = request.headers.get("Authorization") || "";
 		
-		const res = await fetch(backendUrl.toString());
+		const res = await fetch(backendUrl.toString(), {
+            method: "GET",
+            headers: {
+                "Authorization": token,
+            },
+        });
 		const data = await res.json();
 		
 		return Response.json(data);

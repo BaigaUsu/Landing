@@ -14,8 +14,14 @@ export async function GET(request: NextRequest) {
 		});
 		
 		console.log('Backend URL:', backendUrl.toString());
+        const token = request.headers.get("Authorization") || "";
 		
-		const res = await fetch(backendUrl.toString());
+		const res = await fetch(backendUrl.toString(), {
+            method: "GET",
+            headers: {
+                "Authorization": token, // <-- прокидываем токен
+            },
+        });
 		const data = await res.json();
 		
 		return Response.json(data);
@@ -30,12 +36,14 @@ export async function GET(request: NextRequest) {
 export async function POST(req: NextRequest) {
     try {
         const body = await req.json(); // Получаем тело запроса от клиента
+        const token = req.headers.get("Authorization") || "";
 
         const res = await fetch(`${process.env.API_URL}/projects/`, {
             method: "POST",
             body: JSON.stringify(body),
 			headers: {
-				"Content-Type": "application/json", // ✅ добавь это!
+				"Content-Type": "application/json", 
+                "Authorization": token,
 			},
         });
 
