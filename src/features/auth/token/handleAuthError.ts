@@ -1,5 +1,5 @@
 import { AppDispatch } from "@/redux/store";
-import { refreshAccessToken } from "./token/refreshAccessToken";
+import { refreshAccessToken } from "./refreshAccessToken";
 
 export const handleAuthError = async (
 	response: Response,

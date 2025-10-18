@@ -1,21 +1,17 @@
 import { AppDispatch } from "@/redux/store";
-import { attachAuthHeader } from "@/share/services/auth/token/attachAuthHeader";
 import { ExtendedFetchOptions } from "@/lib/http/types/fetchTypes";
 import { prepareRequestBodyAndHeaders } from "./prepareRequestBodyAndHeaders";
-import { handleAuthError } from "@/share/services/auth/handleAuthError";
 import { handleResponse } from "./handleResponse";
 import { retryDelayWithBackoff } from "./retryDelayWithBackoff";
 
 export const fetchLib = async <T = unknown>(
 	url: string,
 	options: ExtendedFetchOptions,
-	dispatch?: AppDispatch
 ): Promise<T> => {
 	const {
 		timeout = 5000,
 		retries = 3,
 		retryDelay = 1000,
-		skipAuth = false,
 		...fetchOptions
 	} = options;
   
@@ -25,25 +21,21 @@ for (let attempt = 1; attempt <= retries; attempt++) {
 
 	try {
 		const baseOptions = { ...fetchOptions, signal: controller.signal };
-		const requestOptions = skipAuth ? baseOptions : attachAuthHeader(baseOptions);
 	  
 		const { body, headers } = prepareRequestBodyAndHeaders(
-			requestOptions.body,
-			requestOptions.headers
+			baseOptions.body,
+			baseOptions.headers
 		);
 		
-		requestOptions.body = body;
-		requestOptions.headers = headers;
+		baseOptions.body = body;
+		baseOptions.headers = headers;
 		
-		const response = await fetch(url, requestOptions);
+		const response = await fetch(url, baseOptions);
 			clearTimeout(timeoutId);
 		
 		if (!response.ok) {
 			const errorText = await response.text();
 			console.error("❗ Ошибка ответа:", errorText);
-			
-			const shouldRetry = await handleAuthError(response, skipAuth, attempt, dispatch!, {});
-			if (shouldRetry) continue;
 			throw new Error(`Ошибка: ${response.status} ${response.statusText}`);
 		}
 	

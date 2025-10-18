@@ -1,4 +1,5 @@
 import { Specialization } from "./specializationTypes";
+import { StageShort } from "./stages/stageShortTypes";
 
 export interface Staff {
     id: number;
@@ -9,6 +10,7 @@ export interface Staff {
     is_active: boolean;
     is_superuser: boolean;
     is_staff: boolean;
+    stages: StageShort[]
     created_at: string;
     updated_at: string;
 }

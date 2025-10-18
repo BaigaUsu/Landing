@@ -1,9 +1,9 @@
 'use client';
 
+import LoginForm from "@/features/auth/forms/login/components/LoginForm";
 import Link from "next/link";
 
 export default function Home() {
-
 
   return (
     <div className="p-8">
@@ -17,6 +17,9 @@ export default function Home() {
     <Link href="/projects" className="text-blue-600 underline ml-4">
       Перейти к проектам
     </Link>
+    <LoginForm onLoginSuccess={(user) => {
+      console.log("User logged in:", user);
+    }} />
   </div>
   );
 }

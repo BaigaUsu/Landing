@@ -1,7 +1,7 @@
-import { setAccessToken, setRefreshToken, clearTokens, getRefreshToken } from "@/share/services/auth/token/tokenStorage";
+import { setAccessToken, setRefreshToken, clearTokens, getRefreshToken } from "@/share/utils/tokenStorage";
 import { AppDispatch } from "@/redux/store";
-import { logoutAction } from "@/redux/auth/authSlice";
-import { refreshApi } from "@/share/api/refreshApi";
+import { logoutAction } from "@/features/auth/service/authSlice";
+import { refreshApi } from "@/features/auth/api/refreshApi";
 
 export const refreshAccessToken = async (dispatch: AppDispatch): Promise<string | null> => {
 	const refreshToken = getRefreshToken();

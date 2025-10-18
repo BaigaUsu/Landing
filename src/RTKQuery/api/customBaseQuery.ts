@@ -1,6 +1,6 @@
 // lib/customBaseQuery.ts
 import type { BaseQueryFn, FetchArgs, FetchBaseQueryError } from "@reduxjs/toolkit/query";
-import { fetchLib } from "@/lib/http/fetchLib";
+import { fetchWithAuth } from "@/features/auth/service/fetchAuth";
 
 export const customBaseQuery: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryError> = async (args, api) => {
 	try {
@@ -44,7 +44,7 @@ export const customBaseQuery: BaseQueryFn<string | FetchArgs, unknown, FetchBase
 			options = restOptions;
 		}
 
-		const data = await fetchLib(url, options, dispatch);
+		const data = await fetchWithAuth(url, options, dispatch);
 		return { data };
 	} catch (error: any) {
 		return {
