@@ -16,6 +16,7 @@ export interface ApplicationList {
     status: string;
     created_at: string;
     updated_at: string;
+    project: ProjectShort;
 }
 
 export interface ApplicationId {

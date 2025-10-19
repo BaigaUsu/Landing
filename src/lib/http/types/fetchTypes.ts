@@ -4,4 +4,5 @@ export type ExtendedFetchOptions = RequestInit & RetryOptions &{
   timeout?: number;
   // auth?: boolean
   skipAuth?: boolean;
+    silentErrors?: boolean;
 };

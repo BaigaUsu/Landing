@@ -18,17 +18,40 @@ export const fetchWithAuth = async <T>(
         return await fetchLib<T>(url, getRequestOptions());
     } catch (error: any) {
         if (error.isHttpError && error.response) {
-            const shouldRetry = await handleAuthError(
-                error.response, 
-                skipAuth, 
-                1, 
-                dispatch!, 
-                {}
-            );
+            const status = error.response.status;
             
-            if (shouldRetry) {
-                // Повторяем с новым токеном
-                return await fetchLib<T>(url, getRequestOptions());
+            // ✅ Пробуем рефреш только для 401
+            if (status === 401 && !skipAuth) {
+                const shouldRetry = await handleAuthError(
+                    error.response, 
+                    skipAuth, 
+                    1, 
+                    dispatch!, 
+                    {}
+                );
+                
+                if (shouldRetry) {
+                    // ✅ Рефреш успешен - повторяем запрос БЕЗ логирования
+                    try {
+                        return await fetchLib<T>(url, { 
+                            ...getRequestOptions(), 
+                            silentErrors: true 
+                        });
+                    } catch (retryError: any) {
+                        // ✅ Если второй запрос тоже упал - ТЕПЕРЬ логируем
+                        if (retryError.isHttpError && retryError.response) {
+                            const errorText = await retryError.response.text();
+                            console.error("❗ Ошибка после рефреша:", errorText);
+                            throw new Error(`Ошибка: ${retryError.response.status} ${errorText}`);
+                        }
+                        throw retryError;
+                    }
+                }
+                
+                // ✅ Рефреш не помог - логируем 401
+                const errorText = await error.response.text();
+                console.error("❗ Ошибка авторизации (рефреш не помог):", errorText);
+                throw new Error(`Ошибка: ${status} ${errorText}`);
             }
             
             // Если не 401 или рефреш не помог - выбрасываем понятную ошибку

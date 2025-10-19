@@ -12,6 +12,7 @@ export const fetchLib = async <T = unknown>(
 		timeout = 5000,
 		retries = 3,
 		retryDelay = 1000,
+        silentErrors = false,
 		...fetchOptions
 	} = options;
   
@@ -34,8 +35,10 @@ for (let attempt = 1; attempt <= retries; attempt++) {
 			clearTimeout(timeoutId);
 		
 		if (!response.ok) {
-			const errorText = await response.text();
-			console.error("❗ Ошибка ответа:", errorText);
+			if (!silentErrors) {
+                const errorText = await response.clone().text();
+                console.error("❗ Ошибка ответа:", errorText);
+            }
             throw { response, isHttpError: true };
 		}
 	
