@@ -36,7 +36,7 @@ for (let attempt = 1; attempt <= retries; attempt++) {
 		if (!response.ok) {
 			const errorText = await response.text();
 			console.error("❗ Ошибка ответа:", errorText);
-			throw new Error(`Ошибка: ${response.status} ${response.statusText}`);
+            throw { response, isHttpError: true };
 		}
 	
 		return await handleResponse<T>(response);
@@ -46,6 +46,10 @@ for (let attempt = 1; attempt <= retries; attempt++) {
 			if ((error as Error).name === "AbortError") {
 				throw new Error("⏱️ Таймаут запроса");
 			}
+
+            if ((error as any).isHttpError) {
+                throw error;
+              }
 			
 			if (attempt < retries) {
 				await retryDelayWithBackoff(attempt, retryDelay, timeout);

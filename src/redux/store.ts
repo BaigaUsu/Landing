@@ -1,11 +1,11 @@
 import { configureStore } from '@reduxjs/toolkit';
-// import authReducer from '@/lib/redux/auth/authSlice';
+import authReducer from '@/features/auth/service/authSlice';
 import { rootApi } from '../RTKQuery/api/rootApi';
 
 export const makeStore = () => {
   return configureStore({
     reducer: {
-    //   auth: authReducer,
+      auth: authReducer,
       [rootApi.reducerPath]: rootApi.reducer, // <-- подключаем RTK Query
     },
     middleware: (getDefaultMiddleware) =>

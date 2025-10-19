@@ -11,17 +11,31 @@ export const fetchWithAuth = async <T>(
 ): Promise<T> => {
     const { skipAuth = false, ...fetchOptions } = options;
 
-    const requestOptions = skipAuth
-        ? fetchOptions
-        : attachAuthHeader(fetchOptions);
+    const getRequestOptions = () => 
+        skipAuth ? fetchOptions : attachAuthHeader(fetchOptions);
 
     try {
-        return await fetchLib<T>(url, requestOptions);
+        return await fetchLib<T>(url, getRequestOptions());
     } catch (error: any) {
-        const shouldRetry = await handleAuthError(error, skipAuth, 1, dispatch!, {});
-        if (shouldRetry) {
-            return await fetchLib<T>(url, requestOptions);
+        if (error.isHttpError && error.response) {
+            const shouldRetry = await handleAuthError(
+                error.response, 
+                skipAuth, 
+                1, 
+                dispatch!, 
+                {}
+            );
+            
+            if (shouldRetry) {
+                // Повторяем с новым токеном
+                return await fetchLib<T>(url, getRequestOptions());
+            }
+            
+            // Если не 401 или рефреш не помог - выбрасываем понятную ошибку
+            // const errorText = await error.response.text();
+            // throw new Error(`Ошибка: ${error.response.status} ${errorText}`);
         }
+        
         throw error;
     }
 };
