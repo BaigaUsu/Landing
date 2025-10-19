@@ -22,7 +22,7 @@ export const projectsApi = rootApi.injectEndpoints({
                 url: `/projects/${id}/`,
                 method: "GET",
             }),
-            providesTags: (result, error, id) => [{ type: 'Stages', id }],
+            providesTags: (result, error, id) => [{ type: 'Stages', id }, { type: 'Projects', id}],
         }),
 
         createProject: build.mutation<ProjectId, ProjectPostRequest>({

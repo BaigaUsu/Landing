@@ -26,10 +26,10 @@ export function useProjectDetailPage({ id, onDelete }: Props) {
     const handleDelete = useCallback(async () => {
         if (!project) return;
         if (confirm("Вы уверены, что хотите удалить проект?")) {
+            onDelete?.();
             try {
                 await deleteProject(project.id).unwrap();
                 alert("Проект удалён");
-                onDelete?.();
             } catch (err) {
                 console.error(err);
                 alert("Ошибка при удалении проекта");

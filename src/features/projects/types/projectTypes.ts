@@ -11,19 +11,29 @@ export interface Project<T> {
 export interface ProjectList {
     id: number;
     project_name: string;
-    client: string;
+    customer: number;
+    customer_name: string;
+    customer_surname: string;
+    customer_email: string;
+    project_manager: number;
     description: string;
     start_date: string;
     end_date: string;
     cost: string;
-    status: "in progress" | "completed" | "pending" | string;
+    status: string;
     comment: string;
+    created_at: string;
+    updated_at: string;
 }
 
   export interface ProjectId {
     id: number;
     project_name: string;
-    client: string;
+    customer: number;
+    customer_name: string;
+    customer_surname: string;
+    customer_email: string;
+    project_manager: number;
     description: string;
     start_date: string;
     end_date: string;
@@ -35,11 +45,12 @@ export interface ProjectList {
     application: ApplicationShort | null;
     tasks: TaskShort[];
     stages: StageList[];
-}
+}   
 
 export interface ProjectPostRequest {
     project_name: string;
-    client: number;
+    customer: number;
+    project_manager: number;
     description: string;
     start_date: string;
     end_date: string;
@@ -50,7 +61,8 @@ export interface ProjectPostRequest {
 
 export interface ProjectUpdateRequest {
     project_name?: string;
-    client?: number | null;
+    customer?: number | null;
+    project_manager?: number | null;
     description?: string;
     start_date?: string;
     end_date?: string;

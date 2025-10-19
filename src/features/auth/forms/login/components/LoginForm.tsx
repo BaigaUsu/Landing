@@ -33,7 +33,7 @@ export default function LoginForm({ onLoginSuccess }: LoginFormProps) {
 
     //   2️⃣ Получаем текущего пользователя
     const user = await dispatch(
-        staffApi.endpoints.getCurrentUser.initiate()
+        staffApi.endpoints.getCurrentStaff.initiate()
       ).unwrap();
 
     //   3️⃣ Обрабатываем успешный вход

@@ -4,13 +4,19 @@ import { Staff } from "../types/staffTypes";
 export const staffApi = rootApi.injectEndpoints({
     overrideExisting: true,
     endpoints: (build) => ({
-        getUsers: build.query<Staff[], void>({
+        getStaffs: build.query<Staff[], void>({
             query: () => ({
                 url: "/accounts/staff/",
                 method: "GET",
             }),
         }),
-            getCurrentUser: build.query<Staff, void>({
+        getStaffById: build.query<Staff, number>({
+            query: (id) => ({
+                url: `/accounts/staff/${id}/`,
+                method: "GET",
+            }),
+        }),
+            getCurrentStaff: build.query<Staff, void>({
             query: () => ({
                 url: "/accounts/me/",
                 method: "GET",
@@ -20,6 +26,7 @@ export const staffApi = rootApi.injectEndpoints({
 });
 
 export const {
-    useGetUsersQuery,
-    useGetCurrentUserQuery,
+    useGetStaffsQuery,
+    useGetStaffByIdQuery,
+    useGetCurrentStaffQuery,
 } = staffApi;

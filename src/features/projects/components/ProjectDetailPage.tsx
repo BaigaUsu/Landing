@@ -5,7 +5,7 @@ import { ProjectEditForm } from "@/features/projects/forms/edit/components/Proje
 import Link from "next/link";
 import { StageCreateForm } from "../../stages/create/components/StageCreationForm";
 import { StageEditForm } from "../../stages/edit/components/StageEditForm";
-import { ServerStageType, ServerStageUrlKind } from "@/features/stages/types/types";
+import { ServerStageType } from "@/features/stages/types/types";
 import { StageDetailItem } from "@/features/stages/components/StageDetailItem";
 import { convertStageTypeToServerKind } from "@/features/stages/service/convertStageTypeToServerKind";
 import FileUploader from "./FileUploader";
@@ -68,7 +68,10 @@ export const ProjectDetailPage = ({ id, onDelete }: Props) => {
                 </div>
                 
                 <div className="mb-6 space-y-2">
-                    <p><strong>Клиент:</strong> {project.client} </p>
+                    <p><strong>Имя:</strong> {project.customer_name} </p>
+                    <p><strong>Фамилия:</strong> {project.customer_surname} </p>
+                    <p><strong>Почта:</strong> {project.customer_email} </p>
+                    <p><strong>Проект Менеджер:</strong> {project.project_manager ?? "Отсутствует"}</p>
                     <p><strong>Описание:</strong> {project.description}</p>
                     <p><strong>Дата начала:</strong> {project.start_date}</p>
                     <p><strong>Дата окончания:</strong> {project.end_date}</p>

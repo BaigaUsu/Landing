@@ -1,7 +1,7 @@
 'use client';
 
 import { ProjectId } from "../../../types/projectTypes";
-import { ProjectUpdateFormValues, projectUpdateSchema } from "@/features/projects/services/validation/projectsCreateSchema";
+import { ProjectUpdateFormValues } from "@/features/projects/services/validation/projectsSchema";
 import { useProjectEditForm } from "../hooks/useProjectEditForm";
 
 type Props = {
@@ -11,7 +11,7 @@ type Props = {
 };
 
 export function ProjectEditForm({ taskIds, project, onSuccess }: Props) {
-    const { register, handleSubmit, errors, isClientsLoading, clients, onSubmit, errorMsg, success } = useProjectEditForm({ project, onSuccess });
+    const { register, handleSubmit, errors, isCustomerLoading, customer, projectManagers, isProjectManagersLoading, onSubmit, errorMsg, success } = useProjectEditForm({ project, onSuccess });
 
     return (
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 max-w-lg mx-auto p-6 border rounded shadow bg-white">
@@ -33,24 +33,51 @@ export function ProjectEditForm({ taskIds, project, onSuccess }: Props) {
             {/* Клиент */}
             <div className="flex flex-col">
                 <label className="text-sm font-medium mb-1">Клиент</label>
-                {isClientsLoading ? (
+                {isCustomerLoading ? (
                 <p className="text-sm italic text-gray-500">Загрузка клиентов...</p>
                 ) : (
                 <select
-                    {...register("client", {
+                    {...register("customer", {
                     setValueAs: (v) => v === "" ? null : Number(v),
                     })}
+                    defaultValue={project.customer ?? ""}
                     className="border border-gray-300 rounded px-3 py-2"
                 >
-                    {clients?.map(client => (
-                    <option key={client.id} value={client.id}>
-                        {client.email}
+                    {customer?.map(customer => (
+                    <option key={customer.id} value={customer.id}>
+                        {customer.email}
                     </option>
                     ))}
                 </select>
                 )}
-                {errors.client && (
-                <p className="text-red-600 text-sm mt-1">{errors.client.message}</p>
+                {errors.customer && (
+                <p className="text-red-600 text-sm mt-1">{errors.customer.message}</p>
+                )}
+            </div>
+            
+             {/* Проэкт мэнеджер */}
+             <div className="flex flex-col">
+                <label className="text-sm font-medium mb-1">Проект мэнеджер</label>
+                {isProjectManagersLoading ? (
+                <p className="text-sm italic text-gray-500">Загрузка клиентов...</p>
+                ) : (
+                <select
+                    {...register("project_manager", {
+                        setValueAs: (v) => v === "" ? null : Number(v),
+                    })}
+                    defaultValue={project.project_manager ?? ""}
+                    className="border border-gray-300 rounded px-3 py-2"
+                >   
+                    <option value="">Отсутствует</option> 
+                    {projectManagers?.map(manager => (
+                    <option key={manager.id} value={manager.id}>
+                        {manager.email}
+                    </option>
+                    ))}
+                </select>
+                )}
+                {errors.project_manager && (
+                <p className="text-red-600 text-sm mt-1">{errors.project_manager.message}</p>
                 )}
             </div>
 
@@ -59,7 +86,6 @@ export function ProjectEditForm({ taskIds, project, onSuccess }: Props) {
                 { label: "Описание", name: "description" },
                 { label: "Дата начала", name: "start_date", type: "date" },
                 { label: "Дата окончания", name: "end_date", type: "date" },
-                { label: "Стоимость", name: "cost", type: "number" },
                 { label: "Комментарий", name: "comment" },
             ].map((field, idx) => (
                 <div key={idx} className="flex flex-col">
@@ -78,13 +104,26 @@ export function ProjectEditForm({ taskIds, project, onSuccess }: Props) {
             ))}
 
             <div className="flex flex-col">
+                <label className="text-sm font-medium mb-1">Стоимость</label>
+                <input
+                    {...register("cost", {
+                        setValueAs: (v) => v === "" ? undefined : Number(v),
+                    })}
+                    className="border border-gray-300 rounded px-3 py-2"
+                />
+                {errors.cost && (
+                <p className="text-red-600 text-sm mt-1">{errors.cost.message}</p>
+                )}
+            </div>
+
+            <div className="flex flex-col">
                 <label className="text-sm font-medium mb-1">Статус</label>
                 <select
                     {...register("status")}
-                    defaultValue="in-progress"
+                    defaultValue="выбрать"
                     className="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
                 >
-                    <option value="in-progress">in-progress</option>
+                    <option value="in progress">in-progress</option>
                     <option value="completed">completed</option>
                     <option value="not-completed">not-completed</option>
                 </select>
