@@ -3,13 +3,13 @@
 import { useLoginMutation } from "@/features/auth/api/authApi";
 import { LoginFormData } from "@/features/auth/service/validation/authSchema";
 import { useAppDispatch } from "@/redux/reduxHooks";
-import { staffApi } from "@/share/api/staffApi";
-import { Staff } from "@/share/types/staffTypes";
+import { meApi } from "@/share/api/meApi";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
+import { Staff, StaffList } from "@/share/types/staffTypes";
 
 type LoginFormProps = {
-  onLoginSuccess: (user: Staff) => void;
+  onLoginSuccess: (user: Staff<StaffList>) => void;
 };
 
 export default function LoginForm({ onLoginSuccess }: LoginFormProps) {
@@ -33,7 +33,7 @@ export default function LoginForm({ onLoginSuccess }: LoginFormProps) {
 
     //   2️⃣ Получаем текущего пользователя
     const user = await dispatch(
-        staffApi.endpoints.getCurrentStaff.initiate()
+        meApi.endpoints.getCurrentMe.initiate()
       ).unwrap();
 
     //   3️⃣ Обрабатываем успешный вход

@@ -7,7 +7,7 @@ export async function GET(
     try {
         const { id } = await params;
 
-        const res = await fetch(`${process.env.API_URL}/accounts/manager/staff/${id}/`, {
+        const res = await fetch(`${process.env.API_URL}/accounts/staff/manager/${id}/`, {
             method: "GET",
         });
 

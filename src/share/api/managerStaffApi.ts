@@ -6,13 +6,13 @@ export const staffApi = rootApi.injectEndpoints({
     endpoints: (build) => ({
         getManagerStaff: build.query<Staff<StaffList>, void>({
             query: () => ({
-                url: "/accounts/manager/staff/",
+                url: "/accounts/staff/manager/",
                 method: "GET",
             }),
         }),
         getManagerStaffById: build.query<StaffId, number>({
             query: (id) => ({
-                url: `/accounts/worker/staff/${id}/`,
+                url: `/accounts/staff/manager/${id}/`,
                 method: "GET",
             }),
         }),

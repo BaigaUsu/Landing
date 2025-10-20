@@ -12,7 +12,6 @@ type Props = {
 
 export function ProjectEditForm({ taskIds, project, onSuccess }: Props) {
     const { register, handleSubmit, errors, isCustomerLoading, customer, projectManagers, isProjectManagersLoading, onSubmit, errorMsg, success } = useProjectEditForm({ project, onSuccess });
-    console.log('customer data:', customer);
     return (
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 max-w-lg mx-auto p-6 border rounded shadow bg-white">
             <h2 className="text-xl font-bold">Редактировать проект #{project.id}</h2>
