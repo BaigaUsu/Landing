@@ -12,7 +12,7 @@ type Props = {
 
 export function ProjectEditForm({ taskIds, project, onSuccess }: Props) {
     const { register, handleSubmit, errors, isCustomerLoading, customer, projectManagers, isProjectManagersLoading, onSubmit, errorMsg, success } = useProjectEditForm({ project, onSuccess });
-
+    console.log('customer data:', customer);
     return (
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 max-w-lg mx-auto p-6 border rounded shadow bg-white">
             <h2 className="text-xl font-bold">Редактировать проект #{project.id}</h2>
@@ -69,7 +69,7 @@ export function ProjectEditForm({ taskIds, project, onSuccess }: Props) {
                     className="border border-gray-300 rounded px-3 py-2"
                 >   
                     <option value="">Отсутствует</option> 
-                    {projectManagers?.map(manager => (
+                    {projectManagers?.results?.map(manager => (
                     <option key={manager.id} value={manager.id}>
                         {manager.email}
                     </option>

@@ -1,6 +1,6 @@
-// src/types/clientTypes.ts
 
-export type Client = {
+
+export type Customers = {
     id: number;
     name: string;
     surname: string;

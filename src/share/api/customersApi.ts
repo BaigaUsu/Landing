@@ -1,25 +1,25 @@
 // src/api/clientsApi.ts
 
 import { rootApi } from "@/RTKQuery/api/rootApi";
-import { Client } from "@/share/types/usersTypes";
+import { Customers } from "../types/customersTypes";
 
 
-export const clientsApi = rootApi.injectEndpoints({
+export const customersApi = rootApi.injectEndpoints({
   endpoints: (build) => ({
-    getClients: build.query<Client[], void>({
+    getCustomers: build.query<Customers[], void>({
       query: () => ({
-        url: "/accounts/clients/",
+        url: "/accounts/customers/",
         method: "GET",
       }),
       providesTags: ["Clients"],
     }),
 
-    getClientById: build.query<Client, number>({
-      query: (id) => `accounts/clients/${id}/`,
+    getCustomersById: build.query<Customers, number>({
+      query: (id) => `accounts/customers/${id}/`,
     //   providesTags: (result, error, id) => [{ type: "Clients", id }],
     }),
   }),
   overrideExisting: false,
 });
 
-export const { useGetClientsQuery, useGetClientByIdQuery } = clientsApi;
+export const { useGetCustomersQuery, useGetCustomersByIdQuery } = customersApi;

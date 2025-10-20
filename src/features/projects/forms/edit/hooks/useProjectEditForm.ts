@@ -1,8 +1,8 @@
 import { usePatchProjectMutation } from "@/features/projects/api/projectApi";
 import { ProjectUpdateFormValues, projectUpdateSchema } from "@/features/projects/services/validation/projectsSchema";
 import { ProjectId } from "@/features/projects/types/projectTypes";
-import { useGetStaffsQuery } from "@/share/api/staffApi";
-import { useGetClientsQuery } from "@/share/api/customersApi";
+import { useGetCustomersQuery } from "@/share/api/customersApi";
+import { useGetManagerStaffQuery } from "@/share/api/managerStaffApi";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -32,8 +32,8 @@ export function useProjectEditForm({ project, onSuccess }: Props) {
     const [updateProject] = usePatchProjectMutation();
     const [errorMsg, setErrorMsg] = useState<string | null>(null);
     const [success, setSuccess] = useState(false);
-    const { data: customer, isLoading: isCustomerLoading } = useGetClientsQuery();
-    const { data: projectManagers, isLoading: isProjectManagersLoading } = useGetStaffsQuery(); // Assuming project managers are fetched similarly
+    const { data: customer, isLoading: isCustomerLoading } = useGetCustomersQuery();
+    const { data: projectManagers, isLoading: isProjectManagersLoading } = useGetManagerStaffQuery(); // Assuming project managers are fetched similarly
 
     useEffect(() => {
         if (project) {
