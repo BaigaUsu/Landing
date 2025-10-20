@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useGetProjectsQuery } from "@/features/projects/api/projectApi";
 import { ProjectCreateForm } from "@/features/projects/forms/create/components/ProjectCreationForm";
 import { ProjectDetailPage } from "@/features/projects/components/ProjectDetailPage";
@@ -20,13 +20,20 @@ export default function ProjectsMasterDetailPage() {
     const { data: projects, isLoading, error } = useGetProjectsQuery(statusFilter);
     const [selectedId, setSelectedId] = useState<number | null>(null);
     const [showCreateForm, setShowCreateForm] = useState(false);
-    const [searchResults, setSearchResults] = useState<any[]>([]); // 👈 сюда прилетят результаты поиска
+    const [searchResults, setSearchResults] = useState<any[]>([]);
+    const detailPaneRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         setSelectedId(null);
         setShowCreateForm(false);
         setSearchResults([]); // сбрасываем поиск при смене фильтра
     }, [statusFilter]);
+    
+    useEffect(() => {
+        if (detailPaneRef.current) {
+            detailPaneRef.current.scrollTop = 0;
+        }
+    }, [selectedId]);
 
     const handleCreateClick = () => {
         setSelectedId(null);
@@ -82,17 +89,17 @@ export default function ProjectsMasterDetailPage() {
                 {listToRender.length ? (
                     listToRender.map((project) => (
                         <div
-                        key={project.id}
-                        className={`p-3 mb-2 border rounded cursor-pointer hover:bg-gray-100 ${
-                            selectedId === project.id && !showCreateForm ? "bg-blue-100" : ""
-                        }`}
-                        onClick={() => {
-                            setSelectedId(project.id);
-                            setShowCreateForm(false);
-                        }}
+                            key={project.id}
+                            className={`p-3 mb-2 border rounded cursor-pointer hover:bg-gray-100 ${
+                                selectedId === project.id && !showCreateForm ? "bg-blue-100" : ""
+                            }`}
+                            onClick={() => {
+                                setSelectedId(project.id);
+                                setShowCreateForm(false);
+                            }}
                         >
-                        <p className="font-semibold">{project.project_name}</p>
-                        <p className="text-sm text-gray-600">{project.status}</p>
+                            <p className="font-semibold">{project.project_name}</p>
+                            <p className="text-sm text-gray-600">{project.status}</p>
                         </div>
                     ))
                     ) : (
@@ -101,7 +108,7 @@ export default function ProjectsMasterDetailPage() {
             </div>
 
             {/* Detail */}
-            <div className="w-2/3 p-8 overflow-y-auto">
+            <div ref={detailPaneRef} className="w-2/3 p-8 overflow-y-auto">
                 {showCreateForm && (
                     <>
                         <h1 className="text-2xl font-bold mb-4">Создание нового проекта</h1>
@@ -123,6 +130,7 @@ export default function ProjectsMasterDetailPage() {
 
                 {typeof selectedId === "number" && !showCreateForm && (
                     <ProjectDetailPage
+                        key={selectedId}
                         id={selectedId}
                         onDelete={() => setSelectedId(null)}
                     />

@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useGetTasksQuery } from "@/features/tasks/api/tasksApi";
 import { TaskCreateForm } from "@/features/tasks/forms/createForm/components/TaskCreationForm";
 import { TaskDetailPage } from "@/features/tasks/components/TaskDetailPage";
@@ -22,12 +22,19 @@ export default function TasksMasterDetailPage() {
     const [selectedId, setSelectedId] = useState<number | null>(null);
     const [showCreateForm, setShowCreateForm] = useState(false);  
     const [searchResults, setSearchResults] = useState<any[]>([]);
+    const detailPaneRef = useRef<HTMLDivElement>(null);
   
     useEffect(() => {
         setSelectedId(null);
         setShowCreateForm(false);
         setSearchResults([]);
     }, [statusFilter]);
+
+    useEffect(() => {
+        if (detailPaneRef.current) {
+            detailPaneRef.current.scrollTop = 0;
+        }
+    }, [selectedId]);
 
     const handleCreateClick = () => {
         setSelectedId(null); // сбрасываем выбранную задачу
@@ -108,7 +115,7 @@ export default function TasksMasterDetailPage() {
            
 
             {/* Detail */}
-            <div className="w-2/3 p-8 overflow-y-auto">
+            <div ref={detailPaneRef} className="w-2/3 p-8 overflow-y-auto">
                 {showCreateForm && (
                     <>
                         <h1 className="text-2xl font-bold mb-4">Создание новой задачи</h1>
@@ -132,6 +139,7 @@ export default function TasksMasterDetailPage() {
                 {/* Подробности задачи */}
                 {typeof selectedId === 'number' && !showCreateForm && (
                     <TaskDetailPage
+                        key={selectedId}
                         taskId={selectedId}
                         onDelete={() => {
                         setSelectedId(null); // закрываем детальную панель

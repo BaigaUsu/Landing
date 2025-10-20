@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useGetApplicationsQuery } from "@/features/applications/api/appApi";
 import ApplicationDetailPage from "@/features/applications/components/ApplicationDetailPage";
 import { SearchBar } from "@/share/components/SearchBar";
@@ -21,13 +21,19 @@ export default function ApplicationMasterDetailPage() {
     const { data: applications, isLoading, error } = useGetApplicationsQuery(statusFilter);
     console.log(applications);
     const [selectedId, setSelectedId] = useState<number | null>(null);
-    const [searchResults, setSearchResults] = useState<any[]>([]); // 👈 сюда прилетят результаты поиска
+    const [searchResults, setSearchResults] = useState<any[]>([]);
+    const detailPaneRef = useRef<HTMLDivElement>(null);
 
 
     useEffect(() => {
         setSelectedId(null);
         setSearchResults([]);
     }, [statusFilter]);
+    useEffect(() => {
+        if (detailPaneRef.current) {
+            detailPaneRef.current.scrollTop = 0;
+        }
+    }, [selectedId]);
 
     const listToRender =
         searchResults.length > 0
@@ -89,8 +95,8 @@ export default function ApplicationMasterDetailPage() {
                 )}
             </div>
 
-            <div className="w-2/3 p-8 overflow-y-auto">
-                <ApplicationDetailPage id={selectedId} />
+            <div ref={detailPaneRef} className="w-2/3 p-8 overflow-y-auto">
+                <ApplicationDetailPage key={selectedId} id={selectedId} />
             </div>
         </div>
     );
