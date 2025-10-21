@@ -17,6 +17,9 @@ export default function Home() {
     <Link href="/projects" className="text-blue-600 underline ml-4">
       Перейти к проектам
     </Link>
+    <Link href="/dashboard" className="text-blue-600 underline ml-4">
+      Перейти в личный кабинет
+    </Link>
     <LoginForm onLoginSuccess={(user) => {
       console.log("User logged in:", user);
     }} />

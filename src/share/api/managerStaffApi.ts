@@ -1,5 +1,6 @@
 import { rootApi } from "@/RTKQuery/api/rootApi";
 import { Staff, StaffId, StaffList } from "../types/staffTypes";
+import { create } from "domain";
 
 export const staffApi = rootApi.injectEndpoints({
     overrideExisting: true,
@@ -16,10 +17,41 @@ export const staffApi = rootApi.injectEndpoints({
                 method: "GET",
             }),
         }),
+        createManagerStaff: build.mutation<StaffId, Partial<StaffId>>({
+            query: (body) => ({
+                url: `/accounts/staff/manager/`,
+                method: "POST",
+                body,
+            }),
+        }),
+        updateManagerStaff: build.mutation<StaffId, { id: number; body: Partial<StaffId> }>({
+            query: ({ id, body }) => ({
+                url: `/accounts/staff/manager/${id}/`,
+                method: "PUT",
+                body,
+            }),
+        }),
+        patchManagerStaff: build.mutation<StaffId, { id: number; body: Partial<StaffId> }>({
+            query: ({ id, body }) => ({
+                url: `/accounts/staff/manager/${id}/`,
+                method: "PATCH",
+                body,
+            }),
+        }),
+        deleteManagerStaff: build.mutation<{ detail: string }, number>({
+            query: (id) => ({
+                url: `/accounts/staff/manager/${id}/`,
+                method: "DELETE",
+            }),
+        }),
     }),
 });
 
 export const {
     useGetManagerStaffQuery,
     useGetManagerStaffByIdQuery,
+    useCreateManagerStaffMutation,
+    useUpdateManagerStaffMutation,
+    usePatchManagerStaffMutation,
+    useDeleteManagerStaffMutation,
 } = staffApi;
