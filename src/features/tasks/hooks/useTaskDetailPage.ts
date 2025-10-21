@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useDeleteTaskMutation, useGetTaskByIdQuery } from '@/features/tasks/api/tasksApi';
+import { useGetManagerStaffQuery } from '@/share/api/managerStaffApi';
 
 type UseTaskDetailPageParams = {
     taskId: number;
@@ -7,7 +8,7 @@ type UseTaskDetailPageParams = {
 };
 
 export function useTaskDetailPage({ taskId, onDelete }: UseTaskDetailPageParams) {
-    const { data: task, isLoading } = useGetTaskByIdQuery(taskId, {
+    const { data: task, isLoading: isTaskLoading } = useGetTaskByIdQuery(taskId, {
         skip: taskId == null,
     });
     const [deleteTask, { isLoading: isDeleting }] = useDeleteTaskMutation();
@@ -30,7 +31,7 @@ export function useTaskDetailPage({ taskId, onDelete }: UseTaskDetailPageParams)
     return {
         // Data and loading states
         task,
-        isLoading,
+        isTaskLoading,
         isDeleting,
 
         // UI state

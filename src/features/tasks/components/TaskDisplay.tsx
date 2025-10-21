@@ -60,6 +60,23 @@ export function TaskDisplay({ task, onEdit, onDelete, onCreateTask, onCreateProj
                 </div>
 
                 <div className="mt-6">
+                    <h2 className="font-semibold text-lg">Рабочий</h2>
+                    {task.assignees && task.assignees.length > 0 ? (
+                        <div className="mt-2 space-y-2">
+                            {task.assignees.map((a) => (
+                                <div key={a.id} className="p-4 border rounded">
+                                    <p><strong>ID:</strong> {a.id}</p>
+                                    <p><strong>Действие:</strong> {a.name}</p>
+                                    <p><strong>Дата:</strong> {a.surname}</p>
+                                </div>
+                            ))}
+                        </div>
+                    ) : (
+                        <p className="text-gray-500 mt-2">Следующих задач не назначено</p>
+                    )}
+                </div>
+
+                <div className="mt-6">
                     <h2 className="font-semibold text-lg">Следующая задача</h2>
                     {task.next_tasks && task.next_tasks.length > 0 ? (
                         <div className="mt-2 space-y-2">

@@ -3,16 +3,26 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { useCreateTaskMutation } from "@/features/tasks/api/tasksApi";
-import { FormValues, taskSchema } from "@/features/tasks/services/validation/taskSchema";
+import { FormValues, taskCreateSchema } from "@/features/tasks/services/validation/taskSchema";
 import { Props } from "../types/taskCreationTypes";
+import { useGetManagerStaffQuery } from "@/share/api/managerStaffApi";
 
 export const useTaskCreationForm = (props: Props) => {
     const { onSuccess } = props;
     const [createTask] = useCreateTaskMutation();
     const [errorMsg, setErrorMsg] = useState<string | null>(null);
     const [success, setSuccess] = useState(false);
+    const {data: assignees, isLoading: isAssigneesLoading} = useGetManagerStaffQuery();
 
     const defaultValues = {
+        name: "",
+        surname: "",
+        email: "",
+        phone_number: "",
+        action: "",
+        action_date: "", 
+        action_time: "",
+        assignees: assignees?.results.map(user => user.id)|| [],
         previous_task: props.type === "form-task" ? props.previousTaskId : null,
         application:
         props.type === "form-task" || props.type === "form-application"
@@ -22,7 +32,7 @@ export const useTaskCreationForm = (props: Props) => {
     };
 
     const form = useForm<FormValues>({
-        resolver: zodResolver(taskSchema),
+        resolver: zodResolver(taskCreateSchema),
         defaultValues,
     });
     
@@ -30,17 +40,9 @@ export const useTaskCreationForm = (props: Props) => {
     const { errors } = formState;
 
     const onSubmit = async (data: FormValues) => {
-        const payload = {
-            ...data,
-            application: data.application ? Number(data.application) : null,
-            previous_task: data.previous_task ?? null,
-            action: data.action || null,
-            action_date: data.action_date || null,
-            action_time: data.action_time || null,
-        };
 
         try {
-            await createTask(payload).unwrap();
+            await createTask(data).unwrap();
             setSuccess(true);
             setErrorMsg(null);
             form.reset();
@@ -52,7 +54,8 @@ export const useTaskCreationForm = (props: Props) => {
     };
 
     return {
-        form,
+        assignees,
+        isAssigneesLoading,
         onSubmit,
         success,
         errorMsg,

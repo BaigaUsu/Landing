@@ -16,10 +16,12 @@ export interface TaskList {
     email: string;
     phone_number: string;
     action: string;
+    assignees: taskAssigneesShort[];
     action_date: string;
     action_time: string;
     status: string;
-    next_tasks: TaskShort | null;
+    created_at: string;
+    updated_at: string;
 }
 
 export interface TaskId {
@@ -31,11 +33,14 @@ export interface TaskId {
     action: string;
     action_date: string;
     action_time: string;
+    assignees: taskAssigneesShort[];
     status: string;
     next_tasks: TaskShort [];
     previous_tasks: TaskShort[];
     application: ApplicationShort | null;
     project: ProjectShort | null;
+    created_at: string;
+    updated_at: string;
 }
 
 export interface TaskCreateRequest {
@@ -43,11 +48,13 @@ export interface TaskCreateRequest {
     surname: string;
     email: string;
     phone_number: string;
-    action: string | null;
+    action: string;
     action_date: string | null;
     action_time: string | null;
+    assignees: number[];
     previous_task: number | null;
     application: number | null;
+    project: number | null;
 }
 
 export interface TaskUpdateRequest {
@@ -58,5 +65,12 @@ export interface TaskUpdateRequest {
     action?: string | null;
     action_date?: string | null; 
     action_time?: string | null; 
+    assignees: taskAssigneesShort[];
     status?: string;
+}
+
+export interface taskAssigneesShort {
+    id: number;
+    name: string;
+    surname: string;
 }

@@ -19,7 +19,6 @@ type StatusFilterValue = typeof FILTER_OPTIONS[number]['value'];
 export default function ApplicationMasterDetailPage() {
     const [statusFilter, setStatusFilter] = useState<StatusFilterValue>("actual");
     const { data: applications, isLoading, error } = useGetApplicationsQuery(statusFilter);
-    console.log(applications);
     const [selectedId, setSelectedId] = useState<number | null>(null);
     const [searchResults, setSearchResults] = useState<any[]>([]);
     const detailPaneRef = useRef<HTMLDivElement>(null);

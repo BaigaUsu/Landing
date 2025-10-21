@@ -1,7 +1,7 @@
 'use client';
 
 import { useGetApplicationByIdQuery } from "@/features/applications/api/appApi";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { ApplicationTasks } from "./ApplicationTasks"; // Убедитесь, что путь верный
 import { ApplicationStatusSelect } from "./ApplicationStatusSelect";
 
@@ -13,7 +13,6 @@ export default function ApplicationDetailPage({ id }: Props) {
     const { data, isLoading, error, refetch } = useGetApplicationByIdQuery(id!, {
         skip: !id,
     });
-
     // Этот хук нужен, чтобы перезапросить данные при смене выбранной заявки
     useEffect(() => {
         if (id) {
@@ -48,14 +47,16 @@ export default function ApplicationDetailPage({ id }: Props) {
                 currentStatus={data.status}
                 onStatusUpdate={refetch}
             />
-
-            <ApplicationTasks
-                tasks={data.tasks}
-                applicationId={data.id}
-                applicationLabel={data.email}
-                onTaskCreate={refetch}
-                currentStatus={data.status}
-            />
+            {data.status === 'verified-positive' ? (
+                <ApplicationTasks
+                    tasks={data.tasks}
+                    applicationId={data.id}
+                    applicationLabel={data.email}
+                    onTaskCreate={refetch}
+                    currentStatus={data.status}
+                />
+            ) : null}
+            
         </div>
     );
 }

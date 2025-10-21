@@ -17,7 +17,7 @@ type Props = {
 export function TaskDetailPage({ taskId, onCloseEdit, onDelete }: Props) {
     const {
         task,
-        isLoading,
+        isTaskLoading,
         isDeleting,
         viewMode,
         showEditView,
@@ -27,7 +27,7 @@ export function TaskDetailPage({ taskId, onCloseEdit, onDelete }: Props) {
         handleDelete,
     } = useTaskDetailPage({ taskId, onDelete });
     
-    if (isLoading) return <p>Загрузка данных...</p>;
+    if (isTaskLoading) return <p>Загрузка данных...</p>;
     if (!task) return <p>Задача не найдена</p>;
 
     return (
@@ -86,7 +86,6 @@ export function TaskDetailPage({ taskId, onCloseEdit, onDelete }: Props) {
                     <ProjectCreateForm
                         taskIds={[task.id, ...(task.previous_tasks?.map(t => t.id) || [])]}
                         applicationId={task.application?.id}
-                        clientEmail={task.email}
                         onSuccess={showDetailView}
                     />
                 </>
