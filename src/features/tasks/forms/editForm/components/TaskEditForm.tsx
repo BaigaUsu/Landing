@@ -14,7 +14,7 @@ const formFields = [
     { label: "Фамилия", name: "surname" as const },
     { label: "Email", name: "email" as const, type: "email" },
     { label: "Телефон", name: "phone_number" as const, type: "tel" },
-    { label: "Действие", name: "action" as const },
+    { label: "Действие", name: "action" as const, type: "textarea" },
     { label: "Дата действия", name: "action_date" as const, type: "date" },
     { label: "Время действия", name: "action_time" as const, type: "time" },
 ];
@@ -24,6 +24,8 @@ export function TaskEditForm({ task, onSuccess }: Props) {
         register,
         handleSubmit,
         errors,
+        assignees,
+        isAssigneesLoading,
         onSubmit,
         errorMsg,
         success,
@@ -54,6 +56,34 @@ export function TaskEditForm({ task, onSuccess }: Props) {
                     {errors.project.message}
                 </p>
             )}
+
+            {/* Селектор исполнителей */}
+            <div className="flex flex-col">
+                <label className="text-sm font-medium mb-1">Исполнители</label>
+                {isAssigneesLoading ? (
+                    <p>Загрузка исполнителей...</p>
+                ) : (
+                    <div className="border border-gray-300 rounded p-3 h-32 overflow-y-auto space-y-2">
+                        {assignees?.results.map((assignee) => (
+                            <label key={assignee.id} className="flex items-center space-x-3 cursor-pointer">
+                            <input
+                                type="checkbox"
+                                value={assignee.id} 
+                                {...register("assignees")}
+                                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                            />
+                            <span className="text-gray-700">{assignee.email}</span>
+                        </label>
+                        ))}
+                    </div>
+                )}
+
+                {errors.assignees && (
+                    <p className="text-red-600 text-sm mt-1">
+                        {errors.assignees.message as string}
+                    </p>
+                )}
+            </div>
 
             {/* Селектор для статуса */}
             <div className="flex flex-col">

@@ -16,6 +16,7 @@ export const tasksApi = rootApi.injectEndpoints({
                 url: `/tasks/${id}/`,
                 method: "GET"
             }),
+            providesTags: ['Tasks'],
         }),
         createTask: build.mutation<TaskId, TaskCreateRequest>({
             query: (body) => ({

@@ -24,7 +24,7 @@ export const taskUpdateSchema = z.object({
     action: z.string().nullable().optional(),
     action_date: z.string().nullable().optional(),
     action_time: z.string().nullable().optional(),
-    asignees: z.array(z.number()).min(1, "Необходимо назначить хотя бы одного рабочего"),
+    assignees: z.array(z.any()),
     status: z.string().min(1, "Статус обязателен"),
     project: z.number().nullable().optional(),
 });

@@ -65,7 +65,7 @@ export interface TaskUpdateRequest {
     action?: string | null;
     action_date?: string | null; 
     action_time?: string | null; 
-    assignees: taskAssigneesShort[];
+    assignees?: taskAssigneesShort[];
     status?: string;
 }
 

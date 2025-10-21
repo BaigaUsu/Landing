@@ -17,10 +17,10 @@ export function useTaskDetailPage({ taskId, onDelete }: UseTaskDetailPageParams)
 
     const handleDelete = async () => {
         if (task && confirm('Вы действительно хотите удалить эту задачу?')) {
+            onDelete?.();
             try {
                 await deleteTask(task.id).unwrap();
                 alert('Задача удалена');
-                onDelete?.();
             } catch (error) {
                 alert('Ошибка при удалении задачи');
                 console.error(error);
