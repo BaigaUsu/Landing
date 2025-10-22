@@ -26,10 +26,10 @@ export interface StaffId {
     name: string;
     surname: string;
     email: string;
-    specialization: Specialization[];
+    specializations: Specialization[];
     is_active: boolean;
     is_superuser: boolean;
-    project: ProjectShort[];
+    projects: ProjectShort[];
     stages: StageShort[];
     tasks: TaskShort[];
     created_at: string;
@@ -44,4 +44,10 @@ export interface StaffRequest {
     is_active?: boolean;
     is_superuser?: boolean;
     is_staff?: boolean;
+}
+
+export interface StaffShort {
+    id: number;
+    name: string;
+    surname: string;
 }

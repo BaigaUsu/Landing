@@ -8,7 +8,7 @@ export async function GET(
         const { id } = await params;
         const token = req.headers.get("Authorization");
 
-        const res = await fetch(`${process.env.API_URL}/accounts/staff/manager/${id}/`, {
+        const res = await fetch(`${process.env.API_URL}/accounts/staff/admin/${id}/`, {
             method: "GET",
             headers: {
                 "Authorization": token || "",

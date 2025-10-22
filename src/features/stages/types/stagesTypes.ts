@@ -1,4 +1,4 @@
-import { Staff } from "../../../share/types/staffTypes";
+import { Staff, StaffShort } from "../../../share/types/staffTypes";
 import { SubStageList } from "../subStages/types/subStagesTypes";
 
 export interface Stage<T> {
@@ -13,7 +13,7 @@ export interface StageList {
     kind: string;
     task: string;
     specialization: string;
-    worker: Staff;
+    worker: StaffShort;
     start_date: string;
     end_date: string;
     piece_rate_pay: string;
@@ -28,7 +28,7 @@ export interface StageId {
     kind: string;
     task: string;
     specialization: string;
-    worker: Staff;
+    worker: StaffShort;
     start_date: string;
     end_date: string;
     piece_rate_pay: string;

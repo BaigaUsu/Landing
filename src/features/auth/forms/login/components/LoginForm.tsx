@@ -6,10 +6,10 @@ import { useAppDispatch } from "@/redux/reduxHooks";
 import { meApi } from "@/share/api/meApi";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
-import { Staff, StaffList } from "@/share/types/staffTypes";
+import { Me } from "@/share/types/me";
 
 type LoginFormProps = {
-  onLoginSuccess: (user: Staff<StaffList>) => void;
+  onLoginSuccess: (user: Me) => void;
 };
 
 export default function LoginForm({ onLoginSuccess }: LoginFormProps) {
@@ -40,6 +40,7 @@ export default function LoginForm({ onLoginSuccess }: LoginFormProps) {
       if (user) {
         onLoginSuccess(user);
         router.push("/");
+        router.refresh();
       }
     } catch (error) {
       console.error("Login failed:", error);
