@@ -6,7 +6,7 @@ export const specializationApi = rootApi.injectEndpoints({
     endpoints: (build) => ({
         getSpecializations: build.query<Specialization[], void>({
             query: () => ({
-                url: "/specializations/",
+                url: "/accounts/specializations/",
                 method: "GET",
             }),
         }),

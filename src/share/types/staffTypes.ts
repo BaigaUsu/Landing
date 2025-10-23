@@ -36,14 +36,15 @@ export interface StaffId {
     updated_at: string;
 }
 
-export interface StaffRequest {      
+export interface StaffCreateRequest {      
     name: string;
     surname: string;
     email: string;
-    specialization: number[];
-    is_active?: boolean;
-    is_superuser?: boolean;
-    is_staff?: boolean;
+    phone_number: string;
+    specializations: number[];
+    is_superuser: boolean;
+    password: string;
+    confirm_password: string;
 }
 
 export interface StaffShort {

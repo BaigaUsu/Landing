@@ -1,5 +1,5 @@
 import { rootApi } from "@/RTKQuery/api/rootApi";
-import { Staff, StaffId, StaffList } from "../types/staffTypes";
+import { Staff, StaffCreateRequest, StaffId, StaffList } from "../types/staffTypes";
 
 export const adminApi = rootApi.injectEndpoints({
     overrideExisting: true,
@@ -16,7 +16,7 @@ export const adminApi = rootApi.injectEndpoints({
                 method: "GET",
             }),
         }),
-        createAdminStaff: build.mutation<StaffId, Partial<StaffId>>({
+        createAdminStaff: build.mutation<StaffId, StaffCreateRequest>({
             query: (body) => ({
                 url: `/accounts/staff/admin/`,
                 method: "POST",
