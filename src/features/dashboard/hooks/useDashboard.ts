@@ -8,7 +8,7 @@ type Mode = "worker" | "manager" | "admin";
 interface StaffDashboardProps {
   mode: Mode;
   workerId?: number; // нужен, если заходит конкретный сотрудник
-  onDelete: () => void;
+  onDelete?: () => void;
 }
 
 export default function useDashboard({ mode, workerId, onDelete }: StaffDashboardProps) {

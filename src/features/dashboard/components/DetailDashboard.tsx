@@ -8,7 +8,7 @@ type Mode = "worker" | "manager" | "admin";
 interface StaffDashboardProps {
     mode: Mode;
     workerId?: number;
-    onDelete: () => void;
+    onDelete?: () => void;
 }
 
 export const DetailDashboard = ({ mode, workerId, onDelete }: StaffDashboardProps) => {
