@@ -28,7 +28,7 @@ export default function UserInfo() {
   return (
     <div className="bg-gray-100 p-4 rounded-md flex items-center justify-between">
       <div>
-        <p className="font-medium">{user.name || "Пользователь"} 👋</p>
+        <p className="font-medium">{user.name || "Админ нахуй"} 👋</p>
         <p className="text-sm text-gray-500">{user.surname}</p>
       </div>
       <button onClick={handleLogout} className="text-red-600 underline">
