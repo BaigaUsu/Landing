@@ -7,9 +7,10 @@ import { meApi } from "@/share/api/meApi";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { Me } from "@/share/types/me";
+import { setUser } from "@/features/auth/service/authSlice";
 
 type LoginFormProps = {
-  onLoginSuccess: (user: Me) => void;
+  onLoginSuccess?: (user: Me) => void;
 };
 
 export default function LoginForm({ onLoginSuccess }: LoginFormProps) {
@@ -38,7 +39,8 @@ export default function LoginForm({ onLoginSuccess }: LoginFormProps) {
 
     //   3️⃣ Обрабатываем успешный вход
       if (user) {
-        onLoginSuccess(user);
+        dispatch(setUser(user));
+        onLoginSuccess?.(user);
         router.push("/");
         router.refresh();
       }

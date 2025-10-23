@@ -26,3 +26,33 @@ export async function GET(
         return new Response("Internal server error", { status: 500 });
     }
 }
+
+
+export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+    try {
+        const { id } = await params;
+        const body = await req.json();
+        const token = req.headers.get("Authorization") || "";
+
+        const res = await fetch(`${process.env.API_URL}/accounts/staff/worker/${id}/`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": token,
+            },
+            body: JSON.stringify(body),
+        });
+
+        if (!res.ok) {
+            const errorText = await res.text();
+            console.error("Ошибка PUT:", errorText);
+            return new Response(errorText || "Ошибка на стороне сервера", { status: res.status });
+        }
+
+        const data = await res.json();
+        return Response.json(data);
+    } catch (err: any) {
+        console.error("Ошибка proxy PUT /projects/:id:", err.message);
+        return new Response("Internal Server Error", { status: 500 });
+    }
+}

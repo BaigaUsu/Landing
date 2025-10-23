@@ -1,5 +1,5 @@
 import { rootApi } from "@/RTKQuery/api/rootApi";
-import { Staff, StaffCreateRequest, StaffId, StaffList } from "../types/staffTypes";
+import { Staff, StaffCreateRequest, StaffId, StaffList, StaffUpdateRequest } from "../types/staffTypes";
 
 export const adminApi = rootApi.injectEndpoints({
     overrideExisting: true,
@@ -9,12 +9,14 @@ export const adminApi = rootApi.injectEndpoints({
                 url: "/accounts/staff/admin/",
                 method: "GET",
             }),
+            providesTags: ["Admin"],
         }),
         getAdminStaffById: build.query<StaffId, number>({
             query: (id) => ({
                 url: `/accounts/staff/admin/${id}/`,
                 method: "GET",
             }),
+            providesTags: ["Admin"],
         }),
         createAdminStaff: build.mutation<StaffId, StaffCreateRequest>({
             query: (body) => ({
@@ -22,26 +24,30 @@ export const adminApi = rootApi.injectEndpoints({
                 method: "POST",
                 body,
             }),
+            invalidatesTags: ["Admin"],
         }),
-        updateAdminStaff: build.mutation<StaffId, { id: number; body: Partial<StaffId> }>({
-            query: ({ id, body }) => ({
+        updateAdminStaff: build.mutation<StaffId, { id: number; data: StaffUpdateRequest }>({
+            query: ({ id, data }) => ({
                 url: `/accounts/staff/admin/${id}/`,
                 method: "PUT",
-                body,
+                body: data,
             }),
+            invalidatesTags: ["Admin"],
         }),
-        patchAdminStaff: build.mutation<StaffId, { id: number; body: Partial<StaffId> }>({
-            query: ({ id, body }) => ({
+        patchAdminStaff: build.mutation<StaffId, { id: number; data: Partial<StaffUpdateRequest> }>({
+            query: ({ id, data }) => ({
                 url: `/accounts/staff/admin/${id}/`,
                 method: "PATCH",
-                body,
+                body: data,
             }),
+            invalidatesTags: ["Admin"],
         }),
         deleteAdminStaff: build.mutation<{ detail: string }, number>({
             query: (id) => ({
                 url: `/accounts/staff/admin/${id}/`,
                 method: "DELETE",
             }),
+            invalidatesTags: ["Admin"],
         }),
     }),
 });

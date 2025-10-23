@@ -1,5 +1,5 @@
 import { rootApi } from "@/RTKQuery/api/rootApi";
-import { StaffId } from "../types/staffTypes";
+import { StaffId, StaffUpdateRequest } from "../types/staffTypes";
 
 export const workerApi = rootApi.injectEndpoints({
     overrideExisting: true,
@@ -9,20 +9,23 @@ export const workerApi = rootApi.injectEndpoints({
                 url: `/accounts/staff/worker/${id}/`,
                 method: "GET",
             }),
+            providesTags: ["Worker"],
         }),
-        updateWorkerStaff: build.mutation<StaffId, { id: number; body: Partial<StaffId> }>({
+        updateWorkerStaff: build.mutation<StaffId, { id: number; body: StaffUpdateRequest }>({
             query: ({ id, body }) => ({
                 url: `/accounts/staff/worker/${id}/`,
                 method: "PUT",
                 body,
             }),
+            invalidatesTags: ["Worker"],
         }),
-        patchWorkerStaff: build.mutation<StaffId, { id: number; body: Partial<StaffId> }>({
-            query: ({ id, body }) => ({
+        patchWorkerStaff: build.mutation<StaffId, { id: number; data: Partial<StaffUpdateRequest> }>({
+            query: ({ id, data }) => ({
                 url: `/accounts/staff/worker/${id}/`,
                 method: "PATCH",
-                body,
+                body: data,
             }),
+            invalidatesTags: ["Worker"]
         }),
     }),
 });

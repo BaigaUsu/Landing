@@ -27,6 +27,7 @@ export interface StaffId {
     surname: string;
     email: string;
     specializations: Specialization[];
+    phone_number: string;
     is_active: boolean;
     is_superuser: boolean;
     projects: ProjectShort[];
@@ -45,6 +46,17 @@ export interface StaffCreateRequest {
     is_superuser: boolean;
     password: string;
     confirm_password: string;
+}
+
+export interface StaffUpdateRequest {
+    name?: string;
+    surname?: string;
+    email?: string;
+    phone_number?: string;
+    specializations?: number[];
+    is_superuser?: boolean;
+    password?: string;
+    confirm_password?: string;
 }
 
 export interface StaffShort {
