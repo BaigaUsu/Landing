@@ -38,6 +38,7 @@ export const StageDetailItem = ({ stage, projectId, onEdit, onDelete }: StageDet
         <div className="space-y-2">
             {/* Основная информация об этапе */}
             <div>
+            <p><strong>Тип этапа:</strong> {detailedStage.id}</p>
                 <p><strong>Тип этапа:</strong> {detailedStage.kind}</p>
                 <p><strong>Задача:</strong> {detailedStage.task}</p>
                 <p><strong>Статус:</strong> {detailedStage.status}</p>

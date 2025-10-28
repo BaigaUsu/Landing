@@ -3,6 +3,7 @@
 import useDashboard from "../hooks/useDashboard";
 import { useState } from "react";
 import { DashboardEditForm } from "../form/edit/components/DashboardEditForm";
+import Link from "next/link";
 
 type Mode = "worker" | "manager" | "admin";
 interface StaffDashboardProps {
@@ -72,7 +73,10 @@ export const DetailDashboard = ({ mode, workerId, onDelete }: StaffDashboardProp
                             <ul className="list-disc list-inside space-y-1">
                                 {staff.projects.map((p) => (
                                     <li key={p.id}>
-                                        {p.project_name} — <span className="text-gray-600">{p.status}</span>
+                                        <Link href={`/projects/${p.id}`} className="text-blue-600 underline">
+                                            {p.project_name}
+                                        </Link>{" "}
+                                        — <span className="text-gray-600">{p.status}</span>
                                     </li>
                                 ))}
                             </ul>
@@ -88,8 +92,12 @@ export const DetailDashboard = ({ mode, workerId, onDelete }: StaffDashboardProp
                             <ul className="list-disc list-inside space-y-1">
                                 {staff.stages.map((s) => (
                                     <li key={s.id}>
-                                        {s.project_name} ({s.specialization}) —{" "}
+                                        <Link href={`/projects/${s.project_id}/stages/${s.kind}/${s.id}`} className="text-blue-600 underline">
+                                            {s.project_name}
+                                        </Link>{" "} 
+                                        ({s.specialization}) —{" "}
                                         <span className="text-gray-600">{s.status}</span>
+                                        <p>{s.kind}</p>
                                     </li>
                                 ))}
                             </ul>
@@ -105,7 +113,10 @@ export const DetailDashboard = ({ mode, workerId, onDelete }: StaffDashboardProp
                             <ul className="list-disc list-inside space-y-1">
                                 {staff.tasks.map((t) => (
                                     <li key={t.id}>
-                                        {t.action} — {t.status} ({t.action_date} {t.action_time})
+                                        <Link href={`/tasks/${t.id}`} className="text-blue-600 underline">
+                                            {t.action}
+                                        </Link>{" "}
+                                        — {t.status} ({t.action_date} {t.action_time})
                                     </li>
                                 ))}
                             </ul>

@@ -1,9 +1,10 @@
 import { ProjectDetailPage } from "@/features/projects/components/ProjectDetailPage";
 
-export default function Page({ params }: any) {
+export default async function Page({ params }: { params: Promise<{ id: string }> }) {
+    const { id } = await params;
   return (
     <div className="p-8">
-      <ProjectDetailPage id={+params.id} />
+      <ProjectDetailPage id={+id} />
     </div>
   );
 }
