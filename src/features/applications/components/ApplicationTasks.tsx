@@ -3,8 +3,10 @@
 import { TaskCreateForm } from "@/features/tasks/forms/createForm/components/TaskCreationForm";
 import { TaskShort } from "@/share/types/tasks/taskShortTypes";
 import { useState } from "react";
+import { ApplicationId } from "../types/appTypes";
 
 type Props = {
+    application: ApplicationId;
     tasks: TaskShort[];
     applicationId: number;
     applicationLabel: string;
@@ -13,6 +15,7 @@ type Props = {
 };
 
 export function ApplicationTasks({
+    application,
     tasks,
     applicationId,
     applicationLabel,
@@ -38,7 +41,8 @@ export function ApplicationTasks({
             {showCreateForm && (
                 <div className="p-4">
                     <TaskCreateForm
-                        type="form-application"
+                        type="from-application"
+                        application={application}
                         applicationId={applicationId}
                         applicationLabel={applicationLabel}
                         onSuccess={() => {

@@ -14,21 +14,24 @@ export const useTaskCreationForm = (props: Props) => {
     const [success, setSuccess] = useState(false);
     const {data: assignees, isLoading: isAssigneesLoading} = useGetManagerStaffQuery();
 
+    const task = props.type === "from-task" ? props.task : null;
+    const application = props.type === "from-application" ? props.application : null;
+
     const defaultValues = {
-        name: "",
-        surname: "",
-        email: "",
-        phone_number: "",
+        name: task?.name || application?.name || "",
+        surname: task?.surname || application?.surname || "",
+        email: task?.email || application?.email || "",
+        phone_number: task?.phone_number || application?.phone_number || "",
         action: "",
         action_date: "", 
         action_time: "",
         assignees: assignees?.results.map(user => user.id)|| [],
-        previous_task: props.type === "form-task" ? props.previousTaskId : null,
+        previous_task: props.type === "from-task" ? props.previousTaskId : null,
         application:
-        props.type === "form-task" || props.type === "form-application"
+        props.type === "from-task" || props.type === "from-application"
             ? props.applicationId
             : null,
-        project: props.type === "form-task" ? props.projectId || null : null,
+        project: props.type === "from-task" ? props.projectId || null : null,
     };
 
     const form = useForm<FormValues>({

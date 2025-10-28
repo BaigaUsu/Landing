@@ -1,6 +1,10 @@
+import { ApplicationId } from "@/features/applications/types/appTypes";
+import { TaskId } from "@/features/tasks/types/taskType";
+
 export type Props =
     | {
-        type: "form-task";
+        type: "from-task";
+        task: TaskId;
         previousTaskId: number;
         previousTaskLabel: string;
         applicationId?: number;
@@ -14,7 +18,8 @@ export type Props =
         onSuccess?: () => void;
     }
     | {
-        type: "form-application";
+        type: "from-application";
+        application: ApplicationId;
         applicationId: number;
         applicationLabel: string;
         onSuccess?: () => void;

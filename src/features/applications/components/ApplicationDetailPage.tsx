@@ -49,6 +49,7 @@ export default function ApplicationDetailPage({ id }: Props) {
             />
             {data.status === 'verified-positive' ? (
                 <ApplicationTasks
+                    application={data}
                     tasks={data.tasks}
                     applicationId={data.id}
                     applicationLabel={data.email}

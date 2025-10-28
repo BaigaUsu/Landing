@@ -11,12 +11,34 @@ export const TaskCreateForm = (props: Props) => {
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 max-w-lg mx-auto p-6 border rounded shadow bg-white">
             <h2 className="text-xl font-bold">Создание новой задачи</h2>
 
+            {/* Основные поля — только для from-task и from-application */}
+            {(props.type === "from-task" || props.type === "from-application") && (
+                <>
+                    {[
+                        { label: "Имя", name: "name" },
+                        { label: "Фамилия", name: "surname" },
+                        { label: "Email", name: "email", type: "email" },
+                        { label: "Телефон", name: "phone_number", type: "tel" },
+                    ].map((field, idx) => (
+                        <div key={idx} className="flex flex-col">
+                            <label className="text-sm font-medium mb-1">{field.label}</label>
+                            <input
+                                {...register(field.name as keyof FormValues)}
+                                type={field.type || "text"}
+                                className="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                            />
+                            {errors[field.name as keyof FormValues] && (
+                            <p className="text-red-600 text-sm mt-1">
+                                {errors[field.name as keyof FormValues]?.message as string}
+                            </p>
+                            )}
+                        </div>
+                    ))}
+                </>
+            )}
+
             {/* Основные поля */}
             {[
-                { label: "Имя", name: "name" },
-                { label: "Фамилия", name: "surname" },
-                { label: "Email", name: "email", type: "email" },
-                { label: "Телефон", name: "phone_number", type: "tel" },
                 { label: "Дата действия", name: "action_date", type: "date" },
                 { label: "Время действия", name: "action_time", type: "time" },
             ].map((field, idx) => (
@@ -72,7 +94,7 @@ export const TaskCreateForm = (props: Props) => {
             </div>
 
             {/* если из задачи → показываем предыдущую задачу */}
-            {props.type === "form-task" && (
+            {props.type === "from-task" && (
                 <div className="flex flex-col">
                     <label className="text-sm font-medium mb-1">Предыдущая задача</label>
                     <input 
@@ -85,7 +107,7 @@ export const TaskCreateForm = (props: Props) => {
             )}
 
             {/* поле заявки */}
-            {props.type === "form-task" || props.type === "form-application" ? (
+            {props.type === "from-task" || props.type === "from-application" ? (
                 <div className="flex flex-col">
                     <label>Заявка</label>
                     <input
@@ -98,7 +120,7 @@ export const TaskCreateForm = (props: Props) => {
             ) : null}
 
             {/* поле проекта */}
-            {props.type === "form-task" ? (
+            {props.type === "from-task" ? (
                 <div className="flex flex-col">
                     <label>Проект</label>
                     <input

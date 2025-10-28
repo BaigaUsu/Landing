@@ -65,7 +65,8 @@ export function TaskDetailPage({ taskId, onCloseEdit, onDelete }: Props) {
                         ❌ Закрыть форму
                     </button>
                     <TaskCreateForm
-                        type="form-task"              
+                        type="from-task"   
+                        task={task}           
                         applicationId={task.application?.id} 
                         applicationLabel={task.application?.email} 
                         previousTaskId={task.id}          
