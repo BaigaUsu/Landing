@@ -1,4 +1,4 @@
-import { AppDispatch } from "@/redux/store";
+import { AppDispatch, RootState } from "@/redux/store";
 import { handleAuthError } from "@/features/auth/token/handleAuthError";
 import { fetchLib } from "@/lib/http/fetchLib";
 import { ExtendedFetchOptions } from "@/lib/http/types/fetchTypes";
@@ -7,7 +7,8 @@ import { attachAuthHeader } from "../token/attachAuthHeader";
 export const fetchWithAuth = async <T>(
     url: string,
     options: ExtendedFetchOptions & { skipAuth?: boolean },
-    dispatch?: AppDispatch
+    dispatch: AppDispatch,
+    getState: () => RootState,
 ): Promise<T> => {
     const { skipAuth = false, ...fetchOptions } = options;
 
@@ -27,7 +28,7 @@ export const fetchWithAuth = async <T>(
                     skipAuth, 
                     1, 
                     dispatch!, 
-                    {}
+                    getState 
                 );
                 
                 if (shouldRetry) {
@@ -55,8 +56,8 @@ export const fetchWithAuth = async <T>(
             }
             
             // Если не 401 или рефреш не помог - выбрасываем понятную ошибку
-            // const errorText = await error.response.text();
-            // throw new Error(`Ошибка: ${error.response.status} ${errorText}`);
+            const errorText = await error.response.text();
+            throw new Error(`Ошибка: ${error.response.status} ${errorText}`);
         }
         
         throw error;

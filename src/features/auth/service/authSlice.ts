@@ -1,11 +1,12 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { getAccessToken, removeAccessToken } from "@/share/utils/tokenStorage";
+import { clearTokens, getAccessToken, removeAccessToken } from "@/share/utils/tokenStorage";
 import { Customers } from "@/share/types/customersTypes";
 import { Me } from "@/share/types/me";
 
 interface AuthState {
     isAuthenticated: boolean;
     accessToken: string | null;
+    refreshToken?: string | null;
     user: Me | null;
 }
 
@@ -20,10 +21,11 @@ const authSlice = createSlice({
     initialState,
     reducers: {
         logoutAction: (state) => {
-        state.isAuthenticated = false;
-        state.accessToken = null;
-        state.user = null;
-        removeAccessToken();
+            state.isAuthenticated = false;
+            state.accessToken = null;
+            state.refreshToken = null;
+            state.user = null;
+            clearTokens();
         },
         setUser: (state, action: PayloadAction<Me>) => {
         state.user = action.payload;

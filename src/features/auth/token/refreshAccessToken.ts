@@ -1,10 +1,14 @@
 import { setAccessToken, setRefreshToken, clearTokens, getRefreshToken } from "@/share/utils/tokenStorage";
-import { AppDispatch } from "@/redux/store";
+import { AppDispatch, RootState } from "@/redux/store";
 import { logoutAction } from "@/features/auth/service/authSlice";
 import { refreshApi } from "@/features/auth/api/refreshApi";
 
-export const refreshAccessToken = async (dispatch: AppDispatch): Promise<string | null> => {
-	const refreshToken = getRefreshToken();
+export const refreshAccessToken = async (dispatch: AppDispatch, getState: () => RootState): Promise<string | null> => {
+	const state = getState();
+    if (!state.auth.isAuthenticated) return null;
+
+    const refreshToken = getRefreshToken();
+    if (!refreshToken) return null;
 	
 	if (!refreshToken) {
 		console.warn("⚠️ Refresh token отсутствует в localStorage.");
@@ -16,7 +20,6 @@ export const refreshAccessToken = async (dispatch: AppDispatch): Promise<string 
 	try {
 		const response = await refreshApi(refreshToken);
 	
-	// Проверим статус и выведем текст ошибки, если что-то не так
 		if (!response.ok) {
 			const errorText = await response.text();
 			console.error(`❌ Ошибка при обновлении токена: [${response.status}] ${errorText}`);
@@ -43,5 +46,4 @@ export const refreshAccessToken = async (dispatch: AppDispatch): Promise<string 
 		// window.location.href = "/login";
 		return null;
 	}
-
 };
