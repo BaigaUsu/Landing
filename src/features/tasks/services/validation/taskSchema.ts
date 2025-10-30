@@ -1,10 +1,10 @@
 import { z } from "zod";
 
 export const taskCreateSchema = z.object({
-    name: z.string().min(1, "Имя обязательно"),
-    surname: z.string().min(1, "Фамилия обязательна"),
-    email: z.string().email("Неверный email"),
-    phone_number: z.string().min(5, "Телефон обязателен"),
+    name: z.string().optional(),
+    surname: z.string().optional(),
+    email: z.string().optional(),
+    phone_number: z.string().optional(),
     action: z.string().min(1, "Действие обязательно"),
     action_date: z.string(),
     action_time: z.string(),

@@ -58,6 +58,7 @@ export const TaskCreateForm = (props: Props) => {
             ))}
 
             {/* рабочие */}
+            {props.type !== "from-application" && (
             <div className="flex flex-col">
                 <label className="text-sm font-medium mb-1">Рабочие</label>
                 {isAssigneesLoading ? (
@@ -81,6 +82,7 @@ export const TaskCreateForm = (props: Props) => {
                     <p className="text-red-600 text-sm mt-1">{errors.assignees.message}</p>
                 )}
             </div>
+            )}
 
             <div className="flex flex-col">
                 <label className="text-sm font-medium mb-1">Действие</label>
@@ -107,7 +109,7 @@ export const TaskCreateForm = (props: Props) => {
             )}
 
             {/* поле заявки */}
-            {props.type === "from-task" || props.type === "from-application" ? (
+            {props.type === "from-application" ? (
                 <div className="flex flex-col">
                     <label>Заявка</label>
                     <input

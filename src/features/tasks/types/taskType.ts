@@ -44,10 +44,10 @@ export interface TaskId {
 }
 
 export interface TaskCreateRequest {
-    name: string;
-    surname: string;
-    email: string;
-    phone_number: string;
+    name?: string;
+    surname?: string;
+    email?: string;
+    phone_number?: string;
     action: string;
     action_date: string | null;
     action_time: string | null;
