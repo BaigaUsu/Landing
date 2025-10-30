@@ -18,6 +18,7 @@ type StatusFilterValue = typeof FILTER_OPTIONS[number]['value'];
 
 export default function TasksMasterDetailPage() {
     const [statusFilter, setStatusFilter] = useState<StatusFilterValue>("actual");
+    // const [page, setPage] = useState(1);
     const { data: tasks, isLoading, error } = useGetTasksQuery(statusFilter);
     const [selectedId, setSelectedId] = useState<number | null>(null);
     const [showCreateForm, setShowCreateForm] = useState(false);  
@@ -28,6 +29,7 @@ export default function TasksMasterDetailPage() {
         setSelectedId(null);
         setShowCreateForm(false);
         setSearchResults([]);
+        // setPage(1);
     }, [statusFilter]);
 
     useEffect(() => {
@@ -138,13 +140,44 @@ export default function TasksMasterDetailPage() {
 
                 {/* Подробности задачи */}
                 {typeof selectedId === 'number' && !showCreateForm && (
-                    <TaskDetailPage
-                        key={selectedId}
-                        taskId={selectedId}
-                        onDelete={() => {
-                        setSelectedId(null); // закрываем детальную панель
-                        }}
-                    />
+                    <>
+                        {/* 🔹 Кнопки навигации по задачам */}
+                        <div className="flex justify-between items-center mt-6">
+                            <button
+                                onClick={() => {
+                                    const index = listToRender.findIndex(t => t.id === selectedId);
+                                    if (index > 0) setSelectedId(listToRender[index - 1].id);
+                                }}
+                                disabled={
+                                    listToRender.findIndex(t => t.id === selectedId) <= 0
+                                }
+                                className="px-3 py-1 bg-gray-200 rounded disabled:opacity-50"
+                            >
+                                ← Предыдущая
+                            </button>
+
+                            <button
+                                onClick={() => {
+                                    const index = listToRender.findIndex(t => t.id === selectedId);
+                                    if (index < listToRender.length - 1)
+                                    setSelectedId(listToRender[index + 1].id);
+                                }}
+                                disabled={
+                                    listToRender.findIndex(t => t.id === selectedId) === listToRender.length - 1
+                                }
+                                className="px-3 py-1 bg-gray-200 rounded disabled:opacity-50"
+                            >
+                                Следующая →
+                            </button>
+                        </div>
+                        <TaskDetailPage
+                            key={selectedId}
+                            taskId={selectedId}
+                            onDelete={() => {
+                                setSelectedId(null); // закрываем детальную панель
+                            }}
+                        />
+                    </>
                 )}
             </div>
         </div>
