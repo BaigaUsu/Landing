@@ -13,8 +13,7 @@ export function useTaskDetailPage({ taskId, onDelete }: UseTaskDetailPageParams)
     });
     const [deleteTask, { isLoading: isDeleting }] = useDeleteTaskMutation();
 
-    const [viewMode, setViewMode] = useState<'view' | 'edit' | 'createTask' | 'createProject'>('view');
-
+    const [viewMode, setViewMode] = useState<'view' | 'edit' | 'createTask' | 'createProject' | 'createCustomer'>('view');
     const handleDelete = async () => {
         if (task && confirm('Вы действительно хотите удалить эту задачу?')) {
             onDelete?.();
@@ -42,6 +41,7 @@ export function useTaskDetailPage({ taskId, onDelete }: UseTaskDetailPageParams)
         showCreateTaskView: () => setViewMode('createTask'),
         showCreateProjectView: () => setViewMode('createProject'),
         showDetailView: () => setViewMode('view'),
+        showCreateCustomerView: () => setViewMode('createCustomer'),
 
         // Business logic handlers
         handleDelete,
