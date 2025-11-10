@@ -16,3 +16,10 @@ export type Customers = {
     email: string;
     phone_number: string;
   };
+
+  export type UpdateCustomers = {
+    name?: string;
+    surname?: string;
+    email?: string;
+    phone_number?: string;
+  };

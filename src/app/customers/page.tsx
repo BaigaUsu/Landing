@@ -11,9 +11,6 @@ export default function CustomersMasterDetailPage() {
     const [showCreateForm, setShowCreateForm] = useState(false);
     const detailPaneRef = useRef<HTMLDivElement>(null);
 
-    const [createCustomer] = useCreateCustomerMutation();
-    const [deleteCustomer] = useDeleteCustomerMutation();
-
     useEffect(() => {
         if (detailPaneRef.current) {
             detailPaneRef.current.scrollTop = 0;
@@ -23,13 +20,6 @@ export default function CustomersMasterDetailPage() {
     const handleCreateClick = () => {
         setSelectedId(null);
         setShowCreateForm(true);
-    };
-
-    const handleDelete = async (id: number) => {
-        if (confirm("Вы точно хотите удалить клиента?")) {
-            await deleteCustomer(id);
-            setSelectedId(null);
-        }
     };
 
     if (isLoading) return <p className="p-4">Загрузка клиентов...</p>;
@@ -95,7 +85,9 @@ export default function CustomersMasterDetailPage() {
                     <CustomerDetailPage
                         key={selectedId}
                         id={selectedId}
-                        onDelete={() => handleDelete(selectedId)}
+                        onDelete={() => {
+                            setSelectedId(null);
+                        }}
                     />
                 )}
             </div>
