@@ -91,6 +91,9 @@ export default function HomePage() {
           <Link href="/dashboard" className="text-blue-600 underline">
             Личный кабинет
           </Link>
+          <Link href="/customers" className="text-blue-600 underline">
+            Перейти к клиентам
+          </Link>
         </div>
       )}
     </div>
