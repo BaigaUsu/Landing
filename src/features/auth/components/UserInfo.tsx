@@ -1,40 +1,31 @@
 'use client';
 
-import { useAppDispatch, useAppSelector } from "@/redux/reduxHooks";
-import { logoutAction, setUser } from "@/features/auth/service/authSlice";
+import { useAppSelector, useAppDispatch } from "@/redux/reduxHooks";
+import { logoutAction } from "@/features/auth/service/authSlice";
 import { meApi } from "@/share/api/meApi";
-import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
 export default function UserInfo() {
-    const [isClient, setIsClient] = useState(false);
     const dispatch = useAppDispatch();
     const router = useRouter();
-    const { user, isAuthenticated } = useAppSelector((state) => state.auth);
-    const { data: currentUser } = meApi.useGetCurrentMeQuery(undefined, {
-        skip: !isAuthenticated,
-    });
+    const { user, isAuthenticated } = useAppSelector((s) => s.auth);
 
-    useEffect(() => setIsClient(true), []);
-    useEffect(() => {
-        if (currentUser) dispatch(setUser(currentUser));
-    }, [currentUser, dispatch]);
+    if (!isAuthenticated || !user) return null;
+    console.log("User data inside component:", user);
 
-    const handleLogout = () => {
+    const logout = () => {
         dispatch(logoutAction());
         dispatch(meApi.util.resetApiState());
-        router.push('/');
+        router.push("/");
     };
-
-    if (!isClient || !isAuthenticated || !user) return null;
 
     return (
         <div className="bg-gray-100 p-4 rounded-md flex items-center justify-between">
             <div>
-                <p className="font-medium">{user.name || "Админ нахуй"} 👋</p>
+                <p className="font-medium">{user.name || 'Админ '}</p>
                 <p className="text-sm text-gray-500">{user.surname}</p>
             </div>
-            <button onClick={handleLogout} className="text-red-600 underline">
+            <button onClick={logout} className="text-red-600 underline">
                 Выйти
             </button>
         </div>
