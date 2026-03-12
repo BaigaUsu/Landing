@@ -6,7 +6,7 @@ import {
     useGetManagerLabelsQuery,
 } from "@/share/api/specialization";
 import { Specialization } from "@/share/types/specializationTypes";
-import { ServerStageType, SpecializationKey } from "../../types/types";
+import { ServerStageType, SpecializationKey } from "../types/types";
 import { useMemo } from "react";
 
 

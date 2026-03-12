@@ -11,10 +11,7 @@ export interface Project<T> {
 export interface ProjectList {
     id: number;
     project_name: string;
-    customer: number;
-    customer_name: string;
-    customer_surname: string;
-    customer_email: string;
+    customer: ProjectCustomer;
     project_manager: number;
     description: string;
     start_date: string;
@@ -29,10 +26,7 @@ export interface ProjectList {
   export interface ProjectId {
     id: number;
     project_name: string;
-    customer: number;
-    customer_name: string;
-    customer_surname: string;
-    customer_email: string;
+    customer: ProjectCustomer;
     project_manager: number;
     description: string;
     start_date: string;
@@ -57,6 +51,7 @@ export interface ProjectPostRequest {
     cost: number;
     application?: number | null;
     tasks?: TaskShort[];
+    comment: string;
 };
 
 export interface ProjectUpdateRequest {
@@ -70,4 +65,11 @@ export interface ProjectUpdateRequest {
     status?: string;
     comment?: string;
     tasks?: TaskShort[];
+}
+
+interface ProjectCustomer {
+    id: number;
+    name: string;
+    surname: string;
+    email: string;
 }

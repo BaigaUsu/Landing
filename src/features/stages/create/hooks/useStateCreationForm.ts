@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { getAvailableSpecializationNames, useSpecializationsByStage } from "../../edit/hooks/useSpecializationsByStage";
+import { getAvailableSpecializationNames, useSpecializationsByStage } from "../../hooks/useSpecializationsByStage";
 import { ServerStageType, ServerStageUrlKind } from "../../types/types";
 import { convertStageTypeToServerKind } from "../../service/convertStageTypeToServerKind";
 import { useStageCreateMutation } from "./useStateCreateMutation";

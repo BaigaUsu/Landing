@@ -2,7 +2,7 @@
 
 import { useStageForm } from "../hooks/useStageForm";
 import { StageWithType } from "../../types/types";
-import { getAvailableSpecializationNames } from "../hooks/useSpecializationsByStage";
+import { getAvailableSpecializationNames } from "../../hooks/useSpecializationsByStage";
 import { useMemo } from "react";
 
 type Props = {

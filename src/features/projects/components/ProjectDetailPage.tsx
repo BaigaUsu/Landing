@@ -68,9 +68,9 @@ export const ProjectDetailPage = ({ id, onDelete }: Props) => {
                 </div>
                 
                 <div className="mb-6 space-y-2">
-                    <p><strong>Имя:</strong> {project.customer_name} </p>
-                    <p><strong>Фамилия:</strong> {project.customer_surname} </p>
-                    <p><strong>Почта:</strong> {project.customer_email} </p>
+                    <p><strong>Имя:</strong> {project.customer.name} </p>
+                    <p><strong>Фамилия:</strong> {project.customer.surname} </p>
+                    <p><strong>Почта:</strong> {project.customer.email} </p>
                     <p><strong>Проект Менеджер:</strong> {project.project_manager ?? "Отсутствует"}</p>
                     <p><strong>Описание:</strong> {project.description}</p>
                     <p><strong>Дата начала:</strong> {project.start_date}</p>

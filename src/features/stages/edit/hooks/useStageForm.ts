@@ -5,7 +5,7 @@ import {
     StageUpdateFormValues, 
     stageUpdateSchema,
 } from "@/features/stages/service/validation/stagesSchema";
-import { STAGE_SPECIALIZATIONS_CONFIG, useSpecializationsByStage } from "./useSpecializationsByStage";
+import { STAGE_SPECIALIZATIONS_CONFIG, useSpecializationsByStage } from "../../hooks/useSpecializationsByStage";
 import { ServerStageType, ServerStageUrlKind, StageWithType } from "../../types/types";
 import { useStageUpdateMutation } from "./useStageMutation";
 import { StageUpdateRequest } from "@/features/stages/types/stagesTypes";
