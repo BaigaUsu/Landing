@@ -1,7 +1,5 @@
 import { useGetStagesByIdQuery } from "../api/specificStages";
-import { convertStageTypeToServerKind } from "../service/convertStageTypeToServerKind";
 import { useDeleteSubStagesMutation } from "../subStages/api/subStagesApi";
-import { ServerStageType, ServerStageUrlKind } from "../types/types";
 
 type StageDetailItemProps = {
   stage: { id: number; kind: string };
@@ -9,7 +7,7 @@ type StageDetailItemProps = {
 };
 
 export function useStageDetailItem({projectId, stage}: StageDetailItemProps) {
-    const stageKind: ServerStageUrlKind = convertStageTypeToServerKind(stage.kind as ServerStageType);
+    const stageKind = (stage.kind);
     
     const { data: detailedStage, isLoading, isError } = useGetStagesByIdQuery({
         id: projectId,

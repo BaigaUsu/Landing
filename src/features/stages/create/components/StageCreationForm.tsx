@@ -1,54 +1,49 @@
 "use client";
 
 import { useMemo } from "react";
-import { ServerStageType } from "../../types/types";
 import { useStageCreationForm } from "../hooks/useStateCreationForm";
+import { StageKind } from "../../types/types";
+import { useGetWorkerLabelsQuery } from "@/share/api/specialization";
 
 type Props = {
     projectId: number;
-    stageType: ServerStageType;
+    stageKind: StageKind;
     onSuccess?: () => void;
 };
 
-export const StageCreateForm = ({ projectId, onSuccess, stageType }: Props, ) => {
-    const { 
+export const StageCreateForm = ({ projectId, onSuccess, stageKind }: Props) => {
+    const {
         register,
         handleSubmit,
         errors,
         onSubmit,
-        isLoading,
         submitError,
         submitSuccess,
         availableSpecializations,
-        specializations,
         watch,
         isSubmitting,
-    } = useStageCreationForm({stageType, projectId, onSuccess});
+    } = useStageCreationForm({stageKind, projectId, onSuccess});
 
     // Отслеживаем выбранную специализацию
-        const selectedSpecialization = watch("specialization");
-                
-        // Фильтруем работников по выбранной специализации
-        const filteredWorkers = useMemo(() => {
-            return selectedSpecialization
-                ? specializations.filter(spec => spec.type === selectedSpecialization)
-                : [];
-        }, [selectedSpecialization, specializations]);
+    
+    const selectedSpecialization = watch("specialization")
+    
+    const { data: workers = [], isLoading } = useGetWorkerLabelsQuery(
+        selectedSpecialization, 
+        { skip: !selectedSpecialization } // Не делать запрос, пока не выбрали роль
+    );
+    if (!stageKind || !stageKind.specializations) {
+        return <p>Загрузка...</p>
+      }
 
-    const getStageDisplayName = (type: ServerStageType): string => {
-        const displayNames: Record<ServerStageType, string> = {
-            "pre-project": "Предпроектная подготовка",
-            "conceptual design": "Концептуальный дизайн",
-            "detailed design": "Детальный дизайн",
-            "material specification": "Спецификация материалов",
-            "author's supervisor": "Авторский надзор",
-        };
-        return displayNames[type] || type;
-    };
-
+      console.log({
+        selectedSpecialization,
+        workers,
+        workerSpecs: workers.map(w => w.specializations)
+      })
     return (
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 border p-4 rounded bg-gray-50 max-w-xl">
-            <h3 className="text-lg font-semibold">Создание этапа: {getStageDisplayName(stageType)}</h3>
+            <h3 className="text-lg font-semibold">Создание этапа: {stageKind.kind_name}</h3>
 
             <div>
                 <label className="block text-sm mb-1">Задача</label>
@@ -79,9 +74,9 @@ export const StageCreateForm = ({ projectId, onSuccess, stageType }: Props, ) =>
                         <label className="block text-sm mb-1">Работник</label>
                         <select {...register("worker", { setValueAs: v => (v === "" ? null : Number(v)) })}>
                             <option value="">Выберите</option>
-                            {filteredWorkers.map((spec) => (
-                                <option key={`${stageType}-${spec.id}`} value={spec.id}>
-                                    {spec.label}
+                            {workers.map((spec) => (
+                                <option key={spec.id} value={spec.id}>
+                                    {spec.full_name}
                                 </option>
                             ))}
                         </select>

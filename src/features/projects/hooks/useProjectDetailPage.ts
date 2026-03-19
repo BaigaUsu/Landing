@@ -1,6 +1,5 @@
 import { useDeleteStageMutation } from "@/features/stages/api/specificStages";
 import { useDeleteProjectMutation, useGetProjectByIdQuery } from "../api/projectApi";
-import { ServerStageUrlKind } from "@/features/stages/types/types";
 import { useCallback } from "react";
 
 type Props = {
@@ -13,7 +12,7 @@ export function useProjectDetailPage({ id, onDelete }: Props) {
     const [deleteProject, { isLoading: isDeleting }] = useDeleteProjectMutation();
     const [deleteStages] = useDeleteStageMutation();
 
-    const handleStageDelete = async (stageId: number, kind: ServerStageUrlKind, projectId: number) => {
+    const handleStageDelete = async (stageId: number, kind: string, projectId: number) => {
         try {
             await deleteStages({ id: projectId, kind, stageId }).unwrap();
             alert("Этап успешно удалён");

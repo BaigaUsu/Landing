@@ -5,12 +5,12 @@ import { ProjectEditForm } from "@/features/projects/forms/edit/components/Proje
 import Link from "next/link";
 import { StageCreateForm } from "../../stages/create/components/StageCreationForm";
 import { StageEditForm } from "../../stages/edit/components/StageEditForm";
-import { ServerStageType } from "@/features/stages/types/types";
 import { StageDetailItem } from "@/features/stages/components/StageDetailItem";
-import { convertStageTypeToServerKind } from "@/features/stages/service/convertStageTypeToServerKind";
 import FileUploader from "./FileUploader";
 import { SubStageCreateForm } from "@/features/stages/subStages/create/components/SubStageCreateForm";
 import { useProjectDetailPage } from "../hooks/useProjectDetailPage";
+import { useGetStageKindsQuery } from "@/features/stages/api/stageKinds";
+import { StageKind } from "@/features/stages/types/types";
 
 type Props = {
   id: number;
@@ -21,9 +21,10 @@ export const ProjectDetailPage = ({ id, onDelete }: Props) => {
     const { project, isLoading, isDeleting, handleStageDelete, handleDelete } = useProjectDetailPage({ id, onDelete });
 
     const [editingStageId, setEditingStageId] = useState<number | null>(null);
-    const [editingStageType, setEditingStageType] = useState<ServerStageType | null>(null);
+    const [editingStageKind, setEditingStageKind] = useState<StageKind | null>(null);
+    const { data: stageKinds = [], isLoading: stageKindLoading } = useGetStageKindsQuery();
     const [showEdit, setShowEdit] = useState(false);
-    const [creatingStageType, setCreatingStageType] = useState<ServerStageType | null>(null);
+    const [creatingStageKind, setCreatingStageKind] = useState<StageKind | null>(null);
     const [showSubForm, setShowSubForm] = useState<number | null>(null);
 
     const FILE_CATEGORIES = [
@@ -105,11 +106,11 @@ export const ProjectDetailPage = ({ id, onDelete }: Props) => {
 
                 {/* Этапы */}
                 <section className="mt-6">
-                    {creatingStageType !== null ? (
+                    {creatingStageKind !== null ? (
                         <div>
                             <div className="flex items-center justify-between mb-4">
                                 <button
-                                    onClick={() => setCreatingStageType(null)}
+                                    onClick={() => setCreatingStageKind(null)}
                                     className="bg-gray-500 hover:bg-gray-600 text-white text-sm px-4 py-2 rounded transition"
                                 >
                                     ❌ Отмена
@@ -118,18 +119,18 @@ export const ProjectDetailPage = ({ id, onDelete }: Props) => {
 
                             <StageCreateForm
                                 projectId={project.id}
-                                stageType={creatingStageType}
-                                onSuccess={() => setCreatingStageType(null)}
+                                stageKind={creatingStageKind}
+                                onSuccess={() => setCreatingStageKind(null)}
                             />
                         </div>
-                    ) : editingStageId !== null && editingStageType !== null ? (
+                    ) : editingStageId !== null && editingStageKind !== null ? (
                         <div>
                             <div className="flex items-center justify-between mb-4">
                             <h2 className="text-2xl font-bold">Редактирование этапа</h2>
                             <button
                                 onClick={() => {
                                 setEditingStageId(null);
-                                setEditingStageType(null);
+                                setEditingStageKind(null);
                                 }}
                                 className="bg-gray-500 hover:bg-gray-600 text-white text-sm px-4 py-2 rounded transition"
                             >
@@ -138,21 +139,25 @@ export const ProjectDetailPage = ({ id, onDelete }: Props) => {
                             </div>
 
                             <StageEditForm
-                                stage={{ id: editingStageId, type: editingStageType, projectId: project.id }}
+                                stage={{ id: editingStageId, kind: editingStageKind.slug, projectId: project.id }}
                                 onSuccess={() => {
                                     setEditingStageId(null);
-                                    setEditingStageType(null);
+                                    setEditingStageKind(null);
                                 }}
                             />
                         </div>
                     ) : (
                         <>
                         <div className="flex flex-wrap gap-3 mt-4">
-                            <button onClick={() => setCreatingStageType("pre-project")} className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded transition">Pre-project</button>
-                            <button onClick={() => setCreatingStageType("conceptual design")} className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded transition">Conceptual design</button>
-                            <button onClick={() => setCreatingStageType("detailed design")} className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded transition">Detailed design</button>
-                            <button onClick={() => setCreatingStageType("material specification")} className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded transition">Material specification</button>
-                            <button onClick={() => setCreatingStageType("author's supervisor")} className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded transition">Author supervision</button>
+                        {stageKinds.map((kind) => (
+                            <button
+                            key={kind.slug}
+                            onClick={() => setCreatingStageKind(kind)}
+                            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded transition"
+                            >
+                            {kind.kind_name}
+                            </button>
+                        ))}
                         </div>
 
                         <h2 className="text-xl font-semibold mb-3 mt-6">Этапы</h2>
@@ -166,7 +171,8 @@ export const ProjectDetailPage = ({ id, onDelete }: Props) => {
                                         stage={stage}
                                         onEdit={() => {
                                             setEditingStageId(stage.id);
-                                            setEditingStageType(stage.kind as ServerStageType);
+                                            const kindObject = stageKinds.find(k => k.slug === stage.kind);
+                                            setEditingStageKind(kindObject || null);
                                         }}
                                         onDelete={(stageId, kind, projectId) => 
                                             handleStageDelete(stageId, kind, projectId)
@@ -179,7 +185,7 @@ export const ProjectDetailPage = ({ id, onDelete }: Props) => {
                                                 <SubStageCreateForm
                                                     projectId={project.id}
                                                     stageId={stage.id}
-                                                    stageKind={convertStageTypeToServerKind(stage.kind as ServerStageType)}
+                                                    stageKind={stage.kind}
                                                     onSuccess={() => setShowSubForm(null)}
                                                 />
                                             ) : (

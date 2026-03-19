@@ -1,5 +1,5 @@
 import { ProjectShort } from "./projects/projectShortTypes";
-import { Specialization } from "./specializationTypes";
+import { Worker } from "./worker-LabelsTypes";
 import { StageShort } from "./stages/stageShortTypes";
 import { TaskShort } from "./tasks/taskShortTypes";
 
@@ -14,7 +14,7 @@ export interface StaffList {
     name: string;
     surname: string;
     email: string;
-    specialization: Specialization[];
+    specialization: Worker[];
     is_active: boolean;
     is_superuser: boolean;
     created_at: string;
@@ -26,7 +26,7 @@ export interface StaffId {
     name: string;
     surname: string;
     email: string;
-    specializations: Specialization[];
+    specializations: Worker[];
     phone_number: string;
     is_active: boolean;
     is_superuser: boolean;

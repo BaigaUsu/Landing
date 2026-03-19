@@ -1,6 +1,5 @@
 "use client";
 
-import { ServerStageType, ServerStageUrlKind } from "@/features/stages/types/types";
 import { SubStageList } from "../subStages/types/subStagesTypes";
 import { StagesFileUploader } from "./StagesFileUploader";
 import { SubStagesFileUploader } from "../subStages/components/SubStagesFileUploader";
@@ -9,12 +8,12 @@ import { useStageDetailItem } from "../hooks/useStageDetailItem";
 type StageDetailItemProps = {
     stage: { id: number; kind: string };
     projectId: number;
-    onEdit: (stageId: number, stageType: ServerStageType) => void;
-    onDelete: (stageId: number, kind: ServerStageUrlKind, projectId: number) => void;
+    onEdit: (stageId: number, kind: string) => void;
+    onDelete: (stageId: number, kind: string, projectId: number) => void;
 };
 
-const FILE_CATEGORIES_MAP: Record<ServerStageUrlKind, string[]> = {
-    'pre-projects': ['documents','media'],
+const FILE_CATEGORIES_MAP: Record<string, string[]> = {
+    'pre-project': ['documents','media'],
     'conceptual-designs': ['documents','render'],
     'detailed-designs': ['documents','drawings'],
     'material-specifications': ['documents'],
@@ -47,7 +46,7 @@ export const StageDetailItem = ({ stage, projectId, onEdit, onDelete }: StageDet
             {/* Кнопки действий */}
             <div className="flex gap-4 items-center">
                 <button
-                    onClick={() => onEdit(detailedStage.id, detailedStage.kind as ServerStageType)}
+                    onClick={() => onEdit(detailedStage.id, detailedStage.kind)}
                     className="text-yellow-600 hover:text-yellow-800 text-sm"
                 >
                     ✏️ Редактировать

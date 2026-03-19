@@ -1,6 +1,5 @@
 // src/features/stages/edit/hooks/useStageUpdateMutation.ts
 import { StageUpdateRequest } from "@/features/stages/types/stagesTypes";
-import { ServerStageUrlKind } from "../../types/types";
 import { useUpdateStagesMutation } from "../../api/specificStages";
 
 export const useStageUpdateMutation = () => {
@@ -8,7 +7,7 @@ export const useStageUpdateMutation = () => {
 
     const updateStage = async (args: { 
         id: number; 
-        kind: ServerStageUrlKind; 
+        kind: string; 
         body: StageUpdateRequest;
         stageId: number;
     }) => {

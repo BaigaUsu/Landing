@@ -1,8 +1,8 @@
-import { Specialization } from "./specializationTypes";
+import { Worker } from "./worker-LabelsTypes";
 
 export interface Me {
     id: number;
     name: string;
     surname: string;
-    specializations: Specialization[];
+    specializations: Worker[];
 }

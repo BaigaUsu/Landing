@@ -1,12 +1,11 @@
 import { rootApi } from "@/RTKQuery/api/rootApi";
 import { Stage, StageCreateRequest, StageId, StageList, StageUpdateRequest } from "@/features/stages/types/stagesTypes";
-import { ServerStageUrlKind } from "../types/types";
 
 export const specificStagesApi = rootApi.injectEndpoints({
     overrideExisting: true,
     endpoints: (build) => ({
         // === GET by type ===
-        getStages: build.query<Stage<StageList>, { id: number; kind: ServerStageUrlKind; status?: string }>({
+        getStages: build.query<Stage<StageList>, { id: number; kind: string; status?: string }>({
             query: ({id, kind, status}) => ({
                 url: `/projects/${id}/stages/${kind}/`,
                 method: 'GET',
@@ -15,7 +14,7 @@ export const specificStagesApi = rootApi.injectEndpoints({
             providesTags: ['Stages'],
         }),
 
-        getStagesById: build.query<StageId, { id: number; kind: ServerStageUrlKind; stageId: number }>({
+        getStagesById: build.query<StageId, { id: number; kind: string; stageId: number }>({
             query: ({ id, kind, stageId }) => ({
                 url: `/projects/${id}/stages/${kind}/${stageId}/`,
                 method: 'GET',
@@ -35,14 +34,14 @@ export const specificStagesApi = rootApi.injectEndpoints({
         // === UPDATE by type ===
         updateStages: build.mutation<StageList, { id: number; kind: string; body: StageUpdateRequest; stageId: number }>({
             query: ({ id, kind, body, stageId }) => ({
-                url: `/projects/${id}/stages/${kind}/${stageId}`,
+                url: `/projects/${id}/stages/${kind}/${stageId}/`,
                 method: "PUT",
                 body,
             }),
             invalidatesTags: ['Stages'],
         }),
 
-        deleteStage: build.mutation<void, { id: number; kind: ServerStageUrlKind; stageId: number }>({
+        deleteStage: build.mutation<void, { id: number; kind: string; stageId: number }>({
             query: ({ id, kind, stageId }) => ({
                 url: `/projects/${id}/stages/${kind}/${stageId}/`,
                 method: "DELETE",
@@ -50,6 +49,7 @@ export const specificStagesApi = rootApi.injectEndpoints({
             invalidatesTags: ['Stages'],
         }),
     }),
+    
 });
 
 export const {

@@ -1,12 +1,11 @@
 'use client';
 
+import { useGetWorkerLabelsQuery } from "@/share/api/specialization";
 import { useStageForm } from "../hooks/useStageForm";
-import { StageWithType } from "../../types/types";
-import { getAvailableSpecializationNames } from "../../hooks/useSpecializationsByStage";
 import { useMemo } from "react";
 
 type Props = {
-    stage: StageWithType;
+    stage: { id: number; kind: string; projectId: number };
     onSuccess?: () => void;
 };
 
@@ -18,27 +17,21 @@ export function StageEditForm({ stage, onSuccess }: Props) {
         onSubmit,
         fullStage,
         isStageLoading,
-        isLoadingSpec,
         errorMsg,
         success,
         isSubmitting,
         stageType: mappedStageType,
         watch,
-        specializations,
+        availableSpecializations,
     } = useStageForm({stage, onSuccess});
 
     // Отслеживаем выбранную специализацию
-    const selectedSpecialization = watch("specialization");
-            
-    // Фильтруем работников по выбранной специализации
-    const filteredWorkers = useMemo(() => {
-        return selectedSpecialization
-            ? specializations.filter(spec => spec.type === selectedSpecialization)
-            : [];
-    }, [selectedSpecialization, specializations]);
+    const selectedSpecialization = watch("specialization")
 
-    // Получение доступных специализаций
-    const availableSpecializations = getAvailableSpecializationNames(mappedStageType);
+        const { data: workers = [], isLoading: isLoadingWorkers } = useGetWorkerLabelsQuery(
+            selectedSpecialization,
+            { skip: !selectedSpecialization } // Не делать запрос, пока не выбрали роль
+        );
     
     // Состояние загрузки данных этапа
     if (isStageLoading || !fullStage) {
@@ -75,7 +68,7 @@ export function StageEditForm({ stage, onSuccess }: Props) {
             </div>
 
             <div className="flex flex-col">
-                {isLoadingSpec ? (
+                {isLoadingWorkers ? (
                     <p>Загрузка...</p>
                 ) : (
                     <>
@@ -83,12 +76,14 @@ export function StageEditForm({ stage, onSuccess }: Props) {
                         <select 
                             {...register("worker", { setValueAs: v => (v === "" ? null : Number(v)) })} 
                             className="border px-3 py-2 rounded"
+                            disabled={!selectedSpecialization}
                         >
-                            {filteredWorkers.map((spec) => (
-                                <option key={`${spec.type}-${spec.id}`} value={spec.id}>
-                                    {spec.label}
-                                </option>
-                            ))}
+                            <option value="">{selectedSpecialization ? "Выберите работника" : "Сначала выберите специализацию"}</option>
+                        {workers.map((worker) => (
+                            <option key={worker.id} value={worker.id}>
+                                {worker.full_name}
+                            </option>
+                        ))}
                         </select>
                     </>
                 )}

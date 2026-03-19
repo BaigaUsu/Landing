@@ -1,28 +1,25 @@
 import { useState } from "react";
-import { getAvailableSpecializationNames, useSpecializationsByStage } from "../../hooks/useSpecializationsByStage";
-import { ServerStageType, ServerStageUrlKind } from "../../types/types";
-import { convertStageTypeToServerKind } from "../../service/convertStageTypeToServerKind";
 import { useStageCreateMutation } from "./useStateCreateMutation";
 import { useForm } from "react-hook-form";
 import { StageFormValues, stageSchema } from "../../service/validation/stagesSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { StageKind } from "../../types/types";
 
 type Props = {
     projectId: number;
-    stageType: ServerStageType;
+    stageKind: StageKind;
     onSuccess?: () => void;
 };
 
-export function useStageCreationForm({ projectId, onSuccess, stageType }: Props) {
+export function useStageCreationForm({ projectId, onSuccess, stageKind }: Props) {
     const [submitError, setSubmitError] = useState<string | null>(null);
     const [submitSuccess, setSubmitSuccess] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
-    const {specializations} = useSpecializationsByStage(stageType);
-    const isLoading = !specializations.length;
-    
-    const availableSpecializations = getAvailableSpecializationNames(stageType);
-    const stageTypeApi: ServerStageUrlKind = convertStageTypeToServerKind(stageType);
+
+    const availableSpecializations =
+  stageKind?.specializations?.map(s => s.specialization) ?? []
+    const stageKindApi = stageKind.slug;
     const { create } = useStageCreateMutation();
 
     const {
@@ -33,6 +30,9 @@ export function useStageCreationForm({ projectId, onSuccess, stageType }: Props)
         reset,
     } = useForm<StageFormValues>({
             resolver: zodResolver(stageSchema),
+            defaultValues: {
+                specialization: "", // Устанавливаем начальное значение
+            }
         });
 
     const onSubmit = async (data: StageFormValues) => {
@@ -47,7 +47,7 @@ export function useStageCreationForm({ projectId, onSuccess, stageType }: Props)
         try {
             await create({
                 projectId,
-                kind: stageTypeApi,   // <- сюда пойдёт "pre-projects" / "conceptual-designs"
+                kind: stageKindApi,   // <- сюда пойдёт "pre-projects" / "conceptual-designs"
                 body: payload,
             });
         
@@ -68,11 +68,9 @@ export function useStageCreationForm({ projectId, onSuccess, stageType }: Props)
         watch,
         errors,
         onSubmit,
-        isLoading,
         isSubmitting,
         submitError,
         submitSuccess,
         availableSpecializations,
-        specializations
     };
 }
