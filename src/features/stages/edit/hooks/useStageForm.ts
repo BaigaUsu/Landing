@@ -11,7 +11,7 @@ import {
 import { useStageUpdateMutation } from "./useStageMutation";
 import { StageUpdateRequest } from "@/features/stages/types/stagesTypes";
 import { useGetStagesByIdQuery } from "../../api/specificStages";
-import { useGetStageKindsQuery } from "@/features/stages/api/stageKinds";
+import { useGetStageKindsQuery } from "@/features/stages/api/stageKindsApi";
 
 type Props = {
   stage: { id: number; kind: string; projectId: number };

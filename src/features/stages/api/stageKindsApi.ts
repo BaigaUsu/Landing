@@ -10,7 +10,15 @@ export const stageKindsApi = rootApi.injectEndpoints({
       }),
       providesTags: ["Stages"],
     }),
+    createStageKinds: builder.mutation<StageKind, Partial<StageKind>>({
+      query: (body) => ({
+        url: "/projects/stage-kinds/",
+        method: "POST",
+        body,
+      }),
+      invalidatesTags: ["Stages"],
+    }),
   }),
 });
 
-export const { useGetStageKindsQuery } = stageKindsApi;
+export const { useGetStageKindsQuery, useCreateStageKindsMutation } = stageKindsApi;

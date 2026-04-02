@@ -9,8 +9,9 @@ import { StageDetailItem } from "@/features/stages/components/StageDetailItem";
 import FileUploader from "./FileUploader";
 import { SubStageCreateForm } from "@/features/stages/subStages/create/components/SubStageCreateForm";
 import { useProjectDetailPage } from "../hooks/useProjectDetailPage";
-import { useGetStageKindsQuery } from "@/features/stages/api/stageKinds";
+import { useGetStageKindsQuery } from "@/features/stages/api/stageKindsApi";
 import { StageKind } from "@/features/stages/types/types";
+import { StageKindCreationForm } from "@/features/stages/create/components/StageKindCreation";
 
 type Props = {
   id: number;
@@ -26,6 +27,7 @@ export const ProjectDetailPage = ({ id, onDelete }: Props) => {
     const [showEdit, setShowEdit] = useState(false);
     const [creatingStageKind, setCreatingStageKind] = useState<StageKind | null>(null);
     const [showSubForm, setShowSubForm] = useState<number | null>(null);
+    const [isCreatingKind, setIsCreatingKind] = useState(false);
 
     const FILE_CATEGORIES = [
         { key: "documents", label: "Документы" },
@@ -158,7 +160,27 @@ export const ProjectDetailPage = ({ id, onDelete }: Props) => {
                             {kind.kind_name}
                             </button>
                         ))}
+                        {/* Кнопка открытия формы создания НОВОГО типа */}
+                        {!isCreatingKind ? (
+                            <button
+                            onClick={() => setIsCreatingKind(true)}
+                            className="border-2 border-dashed border-blue-400 text-blue-600 hover:bg-blue-50 px-4 py-2 rounded transition flex items-center gap-2"
+                            >
+                            <span>➕</span> Создать новый тип
+                            </button>
+                        ) : (
+                            <div className="w-full mt-4 p-4 border rounded-lg bg-gray-50 relative">
+                            <button 
+                                onClick={() => setIsCreatingKind(false)}
+                                className="absolute top-2 right-2 text-gray-400 hover:text-gray-600"
+                            >
+                                ✕
+                            </button>
+                            <StageKindCreationForm onSuccess={() => setIsCreatingKind(false)} />
+                            </div>
+                        )}
                         </div>
+                        
 
                         <h2 className="text-xl font-semibold mb-3 mt-6">Этапы</h2>
 

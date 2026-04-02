@@ -4,6 +4,7 @@ import useDashboard from "../hooks/useDashboard";
 import { useState } from "react";
 import { DashboardEditForm } from "../form/edit/components/DashboardEditForm";
 import Link from "next/link";
+import { SpecializationCreateForm } from "@/share/components/SpecializationsCreateForm";
 
 type Mode = "worker" | "manager" | "admin";
 interface StaffDashboardProps {
@@ -15,6 +16,7 @@ interface StaffDashboardProps {
 export const DetailDashboard = ({ mode, workerId, onDelete }: StaffDashboardProps) => {
     const { isLoading, error, staff, handleDelete, isDeleting } = useDashboard({ mode, workerId, onDelete });
     const [showEdit, setShowEdit] = useState(false);
+    const [isCreating, setIsCreating] = useState(false);
 
     if (isLoading) return <div className="p-6">Загрузка...</div>;
     if (error) return <div className="p-6 text-red-600">Ошибка при загрузке данных</div>;
@@ -57,6 +59,21 @@ export const DetailDashboard = ({ mode, workerId, onDelete }: StaffDashboardProp
                         <strong>Специализации:</strong>{" "}
                         {staff.specializations.map((s) => s.specialization).join(", ") || "—"}
                     </p>
+                    {!isCreating ? (
+                        <button 
+                        onClick={() => setIsCreating(true)}
+                        className="bg-green-600 text-white px-4 py-2 rounded mb-4"
+                        >
+                        + Добавить специализацию
+                        </button>
+                    ) : (
+                        <div className="mb-6 max-w-md">
+                        <SpecializationCreateForm 
+                            onSuccess={() => setIsCreating(false)} 
+                            onCancel={() => setIsCreating(false)}
+                        />
+                        </div>
+                    )}
                     <p className="mb-1">
                         <strong>Активен:</strong> {staff.is_active ? "Да" : "Нет"}
                     </p>

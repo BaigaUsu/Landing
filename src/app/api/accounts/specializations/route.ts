@@ -38,7 +38,7 @@ export async function POST(req: NextRequest) {
         const body = await req.json(); // Получаем тело запроса от клиента
         const token = req.headers.get("Authorization") || "";
 
-        const res = await fetch(`${process.env.API_URL}/projects/`, {
+        const res = await fetch(`${process.env.API_URL}/accounts/specializations/`, {
             method: "POST",
             body: JSON.stringify(body),
             headers: {
